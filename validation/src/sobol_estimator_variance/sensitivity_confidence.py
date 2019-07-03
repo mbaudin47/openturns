@@ -109,8 +109,8 @@ class SensitivityConfidenceTest():
         toInterval = self.sensitivity_algorithm.getTotalOrderIndicesInterval()
 
         # compute empirical variance
-        self.std_first_empirical = ot.Sample(sampleFirst).computeStandardDeviationPerComponent()
-        self.std_total_empirical = ot.Sample(sampleTotal).computeStandardDeviationPerComponent()
+        self.std_first_empirical = ot.Sample(sampleFirst).computeStandardDeviation()
+        self.std_total_empirical = ot.Sample(sampleTotal).computeStandardDeviation()
         return sampleFirst, sampleTotal, foInterval, toInterval, distFirstCol, distTotalCol
 
     def compare_last_repetition(self, sampleFirst, sampleTotal, foInterval, toInterval, distFirstCol, distTotalCol):

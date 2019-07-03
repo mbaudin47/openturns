@@ -22,6 +22,7 @@
 #define OPENTURNS_MARTINEZSENSITIVITYALGORITHM_HXX
 
 #include "openturns/Point.hxx"
+#include "openturns/MartinezSobolIndices.hxx"
 #include "openturns/SobolIndicesAlgorithmImplementation.hxx"
 
 BEGIN_NAMESPACE_OPENTURNS
@@ -73,7 +74,7 @@ public:
 protected:
 
   /** Internal method that compute Vi/VTi using a huge sample */
-  Sample computeIndices(const Sample & sample, Sample & VTi) const override;
+  void computeIndices(const Sample & sample) const;
 
   /** void method that computes asymptotic distribution */
   void computeAsymptoticDistribution() const override;

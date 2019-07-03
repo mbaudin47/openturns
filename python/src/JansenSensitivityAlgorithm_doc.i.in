@@ -58,6 +58,7 @@ where :math:`\tilde{\vect{g}}` is the centered model based on the sample.
 See also
 --------
 SobolIndicesAlgorithm
+JansenSobolIndices
 
 Examples
 --------

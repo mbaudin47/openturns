@@ -230,6 +230,19 @@ ot_add_python_module(statistics statistics_module.i
                       IsotropicCovarianceModel.i IsotropicCovarianceModel_doc.i.in
                    )
 
+ot_add_python_module(iterative_statistics iterative_statistics_module.i
+                      IterativeAlgorithm.i IterativeAlgorithm_doc.i.in
+                      IterativeAlgorithmImplementation.i IterativeAlgorithmImplementation_doc.i.in
+                      IterativeQuantile.i IterativeQuantile_doc.i.in
+                      IterativeExtrema.i IterativeExtrema_doc.i.in
+                      IterativeThresholdExceedance.i IterativeThresholdExceedance_doc.i.in
+                      IterativeKurtosis.i IterativeKurtosis_doc.i.in
+                      IterativeSkewness.i IterativeSkewness_doc.i.in
+                      IterativeVariance.i IterativeVariance_doc.i.in
+                      IterativeMean.i IterativeMean_doc.i.in
+                      BaseIterativeStatisticsTemplateDefs.i
+                   )
+
 ot_add_python_module(geom geom_module.i
                       Domain.i Domain_doc.i.in
                       BipartiteGraph.i BipartiteGraph_doc.i.in
@@ -917,6 +930,12 @@ ot_add_python_module(analytical analytical_module.i
 
 ot_add_python_module(simulation simulation_module.i
 	              ANCOVA.i ANCOVA_doc.i.in
+                      SobolIndicesImplementation.i SobolIndicesImplementation_doc.i.in
+                      SobolIndices.i SobolIndices_doc.i.in
+                      SaltelliSobolIndices.i SaltelliSobolIndices_doc.i.in
+                      MauntzKucherenkoSobolIndices.i MauntzKucherenkoSobolIndices_doc.i.in
+                      JansenSobolIndices.i JansenSobolIndices_doc.i.in
+                      MartinezSobolIndices.i MartinezSobolIndices_doc.i.in
                       SobolIndicesAlgorithmImplementation.i SobolIndicesAlgorithmImplementation_doc.i.in
                       SobolIndicesAlgorithm.i SobolIndicesAlgorithm_doc.i.in
                       MartinezSensitivityAlgorithm.i MartinezSensitivityAlgorithm_doc.i.in

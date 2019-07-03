@@ -72,7 +72,7 @@ public:
 protected:
 
   /** Internal method that compute Vi/VTi using a huge sample */
-  Sample computeIndices(const Sample & sample, Sample & VTi) const override;
+  void computeIndices(const Sample & sample) const;
 
   /** void method that computes asymptotic distribution */
   void computeAsymptoticDistribution() const override;
