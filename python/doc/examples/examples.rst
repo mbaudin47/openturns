@@ -19,5 +19,5 @@ This is the examples section.
     calibration/calibration.rst
     numerical_methods/numerical_methods.rst
     graphics/graphics.rst
-
+    use_cases_index.rst
 
