@@ -51,9 +51,7 @@ with the unbiased sample variance:
 
     \hat{\sigma}^2_i = \frac{1}{n - 1} \sum_{j=1}^n \left(x^{(j)}_i - \overline{x}_i\right)^2.
 
-for :math:`i = 1, \ldots, n_X`.
-
-The expected value of the sample mean is:
+For :math:`i = 1`, the expected value of the sample mean is:
 
 .. math::
 
@@ -64,8 +62,6 @@ and, since the observations are independent, the variance of the sample mean is:
 .. math::
 
     \Var{\overline{X}_i} = \frac{\Var{X_i}}{n}.
-
-for :math:`i = 1, \ldots, n_X`, since the observations are independent.
 
 Moreover, we can estimate the standard deviation of the sample mean with:
 
