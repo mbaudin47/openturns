@@ -20,7 +20,7 @@ dim = 2
 distX = ot.Normal(dim)
 
 # %%
-# We define a model :math:`f` which maps a vector of :math:`mathbb{R}^2` to an other vector of :math`mathbb{R}^2`
+# We define a model :math:`f` which maps a vector of :math:`\mathbb{R}^2` to an other vector of :math:`\mathbb{R}^2`
 #
 # .. math::
 #
@@ -55,7 +55,7 @@ event = ot.DomainEvent(vecY, domain)
 #
 # .. math::
 #
-#    \mathcal{D} = \{ x=(x_1, x_2) \in \mathbb{R}^2 / x_1+x_2 \in [0,1] \mathrm{and~} , 2x_1 \in [0,1] \}
+#    \mathcal{D} = \{ \boldsymbol{x}=(x_1, x_2) \in \mathbb{R}^2 \; | \; x_1+x_2 \in [0,1] \; \mathrm{and} \; 2x_1 \in [0,1] \}
 #
 #
 
@@ -135,7 +135,7 @@ myPolygon.setEdgeColor('darkgray')
 myGraph.add(myPolygon)
 
 # Some annotation                                                                             
-texts = [r'$\mathcal{D} = \{ x=(x_1, x_2) \in \mathbb{R}^2 / x_1+x_2 \in [0,1] \mathrm{~and~} 2x_1 \in [0,1] \}$']
+texts = [r'$\mathcal{D} = \{ \boldsymbol{x}=(x_1, x_2) \in \mathbb{R}^2 \; | \; x_1+x_2 \in [0,1] \; \mathrm{and} \; 2x_1 \in [0,1] \}$']
 
 myText = ot.Text([0.25], [0.0], texts)
 myText.setTextSize(1)
