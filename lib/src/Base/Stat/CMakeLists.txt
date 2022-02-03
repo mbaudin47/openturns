@@ -37,7 +37,7 @@ ot_add_source_file (dsfmt.cxx)
 ot_add_source_file (FilteringWindowsImplementation.cxx)
 ot_add_source_file (FilteringWindows.cxx)
 ot_add_source_file (Hamming.cxx)
-ot_add_source_file (Hanning.cxx)
+ot_add_source_file (Hann.cxx)
 ot_add_source_file (CovarianceModelImplementation.cxx)
 ot_add_source_file (SpectralModelImplementation.cxx)
 ot_add_source_file (SpectralModel.cxx)
@@ -105,7 +105,7 @@ ot_install_header_file (TimeSeries.hxx)
 ot_install_header_file (FilteringWindowsImplementation.hxx)
 ot_install_header_file (FilteringWindows.hxx)
 ot_install_header_file (Hamming.hxx)
-ot_install_header_file (Hanning.hxx)
+ot_install_header_file (Hann.hxx)
 ot_install_header_file (CovarianceModelImplementation.hxx)
 ot_install_header_file (SpectralModelImplementation.hxx)
 ot_install_header_file (SpectralModel.hxx)
@@ -143,7 +143,8 @@ if (BISON_FOUND AND FLEX_FOUND)
   add_custom_command(OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/csv_parser.cc ${CMAKE_CURRENT_BINARY_DIR}/csv_parser.hh
                       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/csv_parser.yy
                       COMMAND ${BISON_EXECUTABLE}
-                      ARGS    -o ${CMAKE_CURRENT_BINARY_DIR}/csv_parser.cc
+                      ARGS    -Wno-deprecated
+                              -o ${CMAKE_CURRENT_BINARY_DIR}/csv_parser.cc
                                  ${CMAKE_CURRENT_SOURCE_DIR}/csv_parser.yy
                       COMMENT "CSV parser generation"
                    )

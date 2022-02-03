@@ -99,34 +99,6 @@ const Scalar SpecFunc::ScalarEpsilon = std::numeric_limits<Scalar>::epsilon();
 const UnsignedInteger SpecFunc::MaximumIteration = ResourceMap::GetAsUnsignedInteger("SpecFunc-MaximumIteration");
 const Scalar SpecFunc::Precision = ResourceMap::GetAsScalar("SpecFunc-Precision");
 
-// Information about capabilities
-Bool SpecFunc::IsBoostAvailable()
-{
-#ifdef OPENTURNS_HAVE_BOOST
-  return true;
-#else
-  return false;
-#endif
-}
-
-Bool SpecFunc::IsMPFRAvailable()
-{
-#ifdef OPENTURNS_HAVE_MPFR
-  return true;
-#else
-  return false;
-#endif
-}
-
-Bool SpecFunc::IsMPCAvailable()
-{
-#ifdef OPENTURNS_HAVE_MPC
-  return true;
-#else
-  return false;
-#endif
-}
-
 // Some facilities for NaN and inf
 Bool SpecFunc::IsNaN(const Scalar value)
 {
@@ -307,10 +279,43 @@ Scalar SpecFunc::DeltaLogBesselI10(const Scalar x)
   // epsilon machine in double precision (Maple)
   if (!(x > 0.848296173838189821792665527416e-2)) return std::log(0.5 * x) + x * x * (-0.125 + 5.0 * x * x / 384.0);
   // Medium argument
-  if (!(x > 22.0)) return std::log(SmallCaseBesselI1(x) / SmallCaseBesselI0(x));  
+  if (!(x > 22.0)) return std::log(SmallCaseBesselI1(x) / SmallCaseBesselI0(x));
   // Large argument
   else return LargeCaseDeltaLogBesselI10(x);
 }
+
+class LogBesselKIntegrandEvaluation : public EvaluationImplementation
+{
+public:
+  LogBesselKIntegrandEvaluation(const Scalar nu, const Scalar x) : EvaluationImplementation(), nu_(nu), x_(x) {}
+  LogBesselKIntegrandEvaluation * clone() const override
+  {
+    return new LogBesselKIntegrandEvaluation(*this);
+  }
+  UnsignedInteger getInputDimension() const override
+  {
+    return 1;
+  }
+  UnsignedInteger getOutputDimension() const override
+  {
+    return 1;
+  }
+
+  Point operator()(const Point & inP) const override
+  {
+    const Scalar t = inP[0];
+    Point outP(1);
+    if (nu_ == 0)
+      outP[0] = exp(-x_ * cosh(t));
+    else
+      outP[0] = exp(-x_ * cosh(t)) * std::pow(sinh(t), 2.0 * nu_);
+    return outP;
+  }
+
+private:
+  Scalar nu_ = 0.0;
+  Scalar x_ = 0.0;
+};
 
 // Logarithm of the modified second kind Bessel function of order nu: LogBesselK(nu, x)=log(\frac{\pi}{2}\frac{I_{-\nu}(x)-I_[\nu}(x)}{\sin{\nu\pi}})
 Scalar SpecFunc::LogBesselK(const Scalar nu,
@@ -335,19 +340,17 @@ Scalar SpecFunc::LogBesselK(const Scalar nu,
   return std::log(boost::math::cyl_bessel_k(nu, x));
 #else
   Scalar logFactor = 0.0;
-  Function integrand;
+  const Function integrand(LogBesselKIntegrandEvaluation(nu, x));
   UnsignedInteger precision = PlatformInfo::GetNumericalPrecision();
   PlatformInfo::SetNumericalPrecision(16);
   Scalar upper = -1.0;
   if (nu == 0.0)
   {
-    integrand = SymbolicFunction("t", String(OSS() << "exp(-" << x << "*cosh(t))"));
     upper = std::log(-2.0 * std::log(ScalarEpsilon) / x);
   }
   else
   {
     logFactor = nu * std::log(0.5 * x) - LogGamma(0.5 + nu) + 0.5 * std::log(M_PI);
-    integrand = SymbolicFunction("t", String(OSS() << "exp(-" << x << "*cosh(t))*(sinh(t))^" << 2.0 * nu));
     upper = std::log(ScalarEpsilon) / (2.0 * nu) - LambertW(-0.25 * x * std::exp(0.5 * std::log(ScalarEpsilon) / nu) / nu, false);
   }
   Scalar epsilon = -1.0;
@@ -498,7 +501,7 @@ Complex SpecFunc::Dawson(const Complex & z)
 Scalar SpecFunc::Debye(const Scalar x,
                        const UnsignedInteger n)
 {
-  if ((n == 0) || (n > 20)) throw InvalidArgumentException(HERE) << "Error: cannot compute Debye function of order outside of {1,...,20}";
+  if (!(n > 0 && n <= 20)) throw InvalidArgumentException(HERE) << "Error: cannot compute Debye function of order outside of {1,...,20}, here order=" << n;
   if (x < 0.0) return Debye(-x, n) - n * x / (n + 1.0);
   // The threshold is such that the overall error is less than 1.0e-16
   if (x < 1.0e-8) return 1.0 - n * x / (2.0 * (n + 1.0));
@@ -513,7 +516,7 @@ Scalar SpecFunc::DiLog(const Scalar x)
   // Special case for 1
   if (x == 1.0) return PI2_6;
   // No real value on (1, \infty)
-  if (!(x <= 1.0)) throw InvalidArgumentException(HERE) << "Error: the DiLog function does not take real values for arguments greater than 1.";
+  if (!(x <= 1.0)) throw InvalidArgumentException(HERE) << "Error: the DiLog function does not take real values for arguments greater than 1, here argument=" << x;
   // Special case for x close to 1
   if (x >= 0.999997)
   {
@@ -859,16 +862,16 @@ Scalar SpecFunc::HyperGeom_1_1(const Scalar p1,
   Bool absEps = abs(eps) > Precision;
   Bool absEpsPrec = absEps;
   do
-    {
-      absEpsPrec = absEps;
-      term *= pochhammerP1 * z / (pochhammerQ1 * factorial);
-      pochhammerP1 += 1.0;
-      pochhammerQ1 += 1.0;
-      factorial += 1.0;
-      sum += term;
-      eps = term / sum;
-      absEps = abs(eps) > Precision;
-    }
+  {
+    absEpsPrec = absEps;
+    term *= pochhammerP1 * z / (pochhammerQ1 * factorial);
+    pochhammerP1 += 1.0;
+    pochhammerQ1 += 1.0;
+    factorial += 1.0;
+    sum += term;
+    eps = term / sum;
+    absEps = abs(eps) > Precision;
+  }
   while (absEps || absEpsPrec);
   return sum.convert_to<Scalar>();
 
@@ -886,7 +889,7 @@ Scalar SpecFunc::HyperGeom_1_1(const Scalar p1,
   Scalar factorial = 1.0;
   Scalar sum = term;
   Scalar eps = 1.0;
-  Bool absEps = abs(eps) > Precision;
+  Bool absEps = std::abs(eps) > Precision;
   Bool absEpsPrec = absEps;
   do
   {
@@ -897,7 +900,7 @@ Scalar SpecFunc::HyperGeom_1_1(const Scalar p1,
     ++factorial;
     sum += term;
     eps = term / sum;
-    absEps = abs(eps) > Precision;
+    absEps = std::abs(eps) > Precision;
   }
   while (absEps || absEpsPrec);
   return sum;
@@ -921,16 +924,16 @@ Complex SpecFunc::HyperGeom_1_1(const Scalar p1,
   Bool absEps = abs(eps) > Precision;
   Bool absEpsPrec = absEps;
   do
-    {
-      absEpsPrec = absEps;
-      term *= pochhammerP1 * z / (pochhammerQ1 * factorial);
-      pochhammerP1 += 1.0;
-      pochhammerQ1 += 1.0;
-      factorial += 1.0;
-      sum += term;
-      eps = term / sum;
-      absEps = abs(eps) > Precision;
-    }
+  {
+    absEpsPrec = absEps;
+    term *= pochhammerP1 * z / (pochhammerQ1 * factorial);
+    pochhammerP1 += 1.0;
+    pochhammerQ1 += 1.0;
+    factorial += 1.0;
+    sum += term;
+    eps = term / sum;
+    absEps = abs(eps) > Precision;
+  }
   while (absEps || absEpsPrec);
   return sum.convert_to<Complex>();
 #else
@@ -940,7 +943,7 @@ Complex SpecFunc::HyperGeom_1_1(const Scalar p1,
   Complex term(1.0);
   Complex sum(term);
   Complex eps(1.0);
-  Bool absEps = abs(eps) > Precision;
+  Bool absEps = std::abs(eps) > Precision;
   Bool absEpsPrec = absEps;
   do
   {
@@ -951,7 +954,7 @@ Complex SpecFunc::HyperGeom_1_1(const Scalar p1,
     ++factorial;
     sum += term;
     eps = term / sum;
-    absEps = abs(eps) > Precision;
+    absEps = std::abs(eps) > Precision;
   }
   while (absEps || absEpsPrec);
   return sum;
@@ -997,7 +1000,7 @@ Scalar SpecFunc::HyperGeom_2_1(const Scalar p1,
   Scalar term = 1.0;
   Scalar sum = term;
   Scalar eps = 1.0;
-  Bool absEps = abs(eps) > Precision;
+  Bool absEps = std::abs(eps) > Precision;
   Bool absEpsPrec = absEps;
   do
   {
@@ -1009,7 +1012,7 @@ Scalar SpecFunc::HyperGeom_2_1(const Scalar p1,
     ++factorial;
     sum += term;
     eps = std::abs(term / sum);
-    absEps = abs(eps) > Precision;
+    absEps = std::abs(eps) > Precision;
   }
   while (absEps || absEpsPrec);
   return sum;
@@ -1060,7 +1063,7 @@ Scalar SpecFunc::HyperGeom_2_2(const Scalar p1,
   Scalar term = 0.0;
   Scalar sum = term;
   Scalar eps = 1.0;
-  Bool absEps = abs(eps) > Precision;
+  Bool absEps = std::abs(eps) > Precision;
   Bool absEpsPrec = absEps;
   const Scalar logX = std::log(std::abs(x));
   Scalar signX = x > 0.0 ? 1.0 : -1.0;
@@ -1077,7 +1080,7 @@ Scalar SpecFunc::HyperGeom_2_2(const Scalar p1,
     sum += signTerm * std::exp(term);
     signTerm *= signX;
     eps = std::abs(term / sum);
-    absEps = abs(eps) > Precision;
+    absEps = std::abs(eps) > Precision;
   }
   while (absEps || absEpsPrec);
   return sum;
@@ -1254,7 +1257,7 @@ Complex SpecFunc::Log1MExp(const Scalar x)
 // Integer log2
 UnsignedInteger SpecFunc::Log2(const Unsigned64BitsInteger n)
 {
-  if (n == 0) throw InvalidArgumentException(HERE) << "Error: n must be positive";
+  if (!(n > 0)) throw InvalidArgumentException(HERE) << "Error: n must be positive";
 
   // De Bruijn sequence
   const UnsignedInteger tab64[64] =
@@ -1340,7 +1343,7 @@ UnsignedInteger SpecFunc::BitCount(const Unsigned64BitsInteger n)
 // Missing functions in cmath wrt math.h as of C++98
 Scalar SpecFunc::Acosh(const Scalar x)
 {
-  if (!(x >= 1.0)) throw InvalidArgumentException(HERE) << "Error: acosh is not defined for x<1, here x=" << x;
+  if (!(x >= 1.0)) throw InvalidArgumentException(HERE) << "Error: acosh is only defined for x>=1, here x=" << x;
   return 2.0 * std::log(sqrt(0.5 * (x + 1.0)) + sqrt(0.5 * (x - 1.0)));
 }
 

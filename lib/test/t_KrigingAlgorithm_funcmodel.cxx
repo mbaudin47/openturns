@@ -1,6 +1,6 @@
 //                                               -*- C++ -*-
 /**
- *  @brief The test file of KrigingAlgorithm class using 
+ *  @brief The test file of KrigingAlgorithm class using
  *  StationaryFunctionalCovarianceModel
  *
  *  Copyright 2005-2021 Airbus-EDF-IMACS-ONERA-Phimeca
@@ -79,6 +79,8 @@ int main(int, char *[])
     algo.run();
     KrigingResult result(algo.getResult());
     Function metaModel(result.getMetaModel());
+    assert_almost_equal(result.getConditionalMarginalVariance(inputSample),
+                        Sample(inputSample.getSize(), 1), 1e-14, 1e-14);
 
 
     // Consistency check: does the reimplementation fit the SquaredExponential class?

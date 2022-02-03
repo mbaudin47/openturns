@@ -50,7 +50,7 @@ static void test_model(const CovarianceModel & myModel, const Bool test_grad = t
   // interval mesher
   Indices levels(inputDimension);
   for (UnsignedInteger k = 0; k < inputDimension; ++k)
-    levels[k] = 9;
+    levels[k] = 7;
   IntervalMesher intervalMesher(levels);
 
   // Building interval
@@ -68,7 +68,7 @@ static void test_model(const CovarianceModel & myModel, const Bool test_grad = t
     // Check that discretize & computeAsScalar provide the same values
     for (UnsignedInteger j = 0; j < vertices.getSize(); ++j)
       for (UnsignedInteger i = j; i < vertices.getSize(); ++i)
-        assert_almost_equal(cov(i,j), myModel.computeAsScalar(vertices[i], vertices[j]), 1e-14, 1e-14);
+        assert_almost_equal(cov(i, j), myModel.computeAsScalar(vertices[i], vertices[j]), 1e-14, 1e-14);
   }
   else
   {
@@ -82,13 +82,25 @@ static void test_model(const CovarianceModel & myModel, const Bool test_grad = t
         {
           for (UnsignedInteger localI = 0; localI < dimension; ++localI)
           {
-           localMatrix(localI, localJ) = cov(i * dimension + localI, j * dimension + localJ);
+            localMatrix(localI, localJ) = cov(i * dimension + localI, j * dimension + localJ);
           }
         }
-          assert_almost_equal(localMatrix, myModel(vertices[i], vertices[j]), 1e-14, 1e-14);
+        assert_almost_equal(localMatrix, myModel(vertices[i], vertices[j]), 1e-14, 1e-14);
       }
     }
   }
+
+  // Now we suppose that discretize is ok
+  // we look at crossCovariance of (vertices, vertices) which should return the same values
+  cov.getImplementation()->symmetrize();
+  const Matrix crossCov(myModel.computeCrossCovariance(vertices, vertices));
+  assert_almost_equal(crossCov, cov, 1e-14, 1e-14, OSS() << "in " << myModel.getImplementation()->getClassName() << "::computeCrossCovariance" );
+
+  // Now crossCovariance(sample, sample) is ok
+  // Let us validate crossCovariance(Sample, point) with 1st column(s) of previous calculations
+  const Matrix crossCovSamplePoint(myModel.computeCrossCovariance(vertices, vertices[0]));
+  const Matrix crossCovCol(crossCov.reshape(crossCov.getNbRows(), dimension));
+  assert_almost_equal(crossCovSamplePoint, crossCovCol, 1e-14, 1e-14,  OSS() << "in " << myModel.getImplementation()->getClassName() << "::computeCrossCovarianceSamplePoint");
 
   // gradient testing
   if (test_grad)
@@ -169,7 +181,7 @@ int main(int, char *[])
 
     PlatformInfo::SetNumericalPrecision(3);
     // Default input dimension parameter to evaluate the model
-    const UnsignedInteger dimension = 2;
+    UnsignedInteger dimension = 2;
 
     // 1) Squared exponential model
     {
@@ -236,7 +248,7 @@ int main(int, char *[])
       SphericalModel myDefautModel;
       test_model(myDefautModel);
 
-      const UnsignedInteger dimension = 2;
+      dimension = 2;
       SphericalModel myModel(Point(dimension, 2), Point(1, 3), 4.5);
       assert_almost_equal(myModel.getScale(), Point(dimension, 2), 0, 0);
       assert_almost_equal(myModel.getAmplitude(), Point(1, 3), 0, 0);
@@ -262,7 +274,7 @@ int main(int, char *[])
 
       const Point amplitude = {1.5, 3.5};
 
-      const UnsignedInteger dimension = 2;
+      dimension = 2;
       CorrelationMatrix spatialCorrelation(dimension);
       for (UnsignedInteger j = 0; j < dimension; ++j)
         for (UnsignedInteger i = j + 1; j < dimension; ++j)
@@ -309,6 +321,8 @@ int main(int, char *[])
       assert_almost_equal(myModel.computeAsScalar(point), myAbsoluteExponential.computeAsScalar(x) * mySquaredExponential.computeAsScalar(y), 1.0e-15, 1.0e-15);
       // Gradient test in comparison with FD
       test_model(myModel);
+      // Check that a ProductCovarianceModel can be built from a DiracCovarianceModel
+      ProductCovarianceModel cov(Collection<CovarianceModel>(1, DiracCovarianceModel(1)));
     }
 
     // 11) Tensorized model
@@ -373,20 +387,20 @@ int main(int, char *[])
       inputVector[0] = 0.3;
       inputVector[1] = 1.7;
       Point inputVectorNorm(1, inputVector.norm());
-      assert_almost_equal(myOneDimensionalKernel(inputVectorNorm)(0,0), 1.992315565746, 1e-12, 0.0);
-      assert_almost_equal(myIsotropicKernel(inputVector)(0,0), 1.992315565746, 1e-12, 0.0);
+      assert_almost_equal(myOneDimensionalKernel(inputVectorNorm)(0, 0), 1.992315565746, 1e-12, 0.0);
+      assert_almost_equal(myIsotropicKernel(inputVector)(0, 0), 1.992315565746, 1e-12, 0.0);
       Sample inputSample(2, 2);
       inputSample[1] = inputVector;
       Sample inputSampleNorm(2, 1);
       inputSampleNorm[1] = inputVectorNorm;
       CovarianceMatrix oneDimensionalCovMatrix(myOneDimensionalKernel.discretize(inputSampleNorm));
       CovarianceMatrix isotropicCovMatrix(myIsotropicKernel.discretize(inputSample));
-      assert_almost_equal(oneDimensionalCovMatrix(0,0), 2.250000000002, 1e-12, 0.0);
-      assert_almost_equal(oneDimensionalCovMatrix(1,1), 2.250000000002, 1e-12, 0.0);
-      assert_almost_equal(isotropicCovMatrix(0,0), 2.250000000002, 1e-12, 0.0);
-      assert_almost_equal(isotropicCovMatrix(1,1), 2.250000000002, 1e-12, 0.0);
-      assert_almost_equal(oneDimensionalCovMatrix(0,1), 1.992315565746, 1e-12, 0.0);
-      assert_almost_equal(isotropicCovMatrix(0,1), 1.992315565746, 1e-12, 0.0);
+      assert_almost_equal(oneDimensionalCovMatrix(0, 0), 2.250000000002, 1e-12, 0.0);
+      assert_almost_equal(oneDimensionalCovMatrix(1, 1), 2.250000000002, 1e-12, 0.0);
+      assert_almost_equal(isotropicCovMatrix(0, 0), 2.250000000002, 1e-12, 0.0);
+      assert_almost_equal(isotropicCovMatrix(1, 1), 2.250000000002, 1e-12, 0.0);
+      assert_almost_equal(oneDimensionalCovMatrix(0, 1), 1.992315565746, 1e-12, 0.0);
+      assert_almost_equal(isotropicCovMatrix(0, 1), 1.992315565746, 1e-12, 0.0);
     }
 
     // Exponential cov model
@@ -404,7 +418,7 @@ int main(int, char *[])
       if (!checkDiag)
         throw TestFailed(OSS() << "isDiagonal differ between spatial covariance & covariance model");
       const Scalar rho = spatialCovariance(1, 0) / std::sqrt(spatialCovariance(0, 0) * spatialCovariance(1, 1));
-      assert_almost_equal(myModel.getOutputCorrelation()(0,1), rho, 0, 0, "in ExponentialModel correlation");
+      assert_almost_equal(myModel.getOutputCorrelation()(0, 1), rho, 0, 0, "in ExponentialModel correlation");
     }
 
     // Kronecker cov model
@@ -446,7 +460,7 @@ int main(int, char *[])
       assert_almost_equal(myModel.getScale(), scale, 0, 0, "in kronecker scale check");
       // full param size = 5 (scale(1), amplitude(2), spatialCorrelation(1), Matern nu(1))
       Point fullParameter = {1, 1, 2, 0.8, 1.5};
-      assert_almost_equal(myModel.getFullParameter(), fullParameter , 0, 0, "in kronecker full param check");
+      assert_almost_equal(myModel.getFullParameter(), fullParameter, 0, 0, "in kronecker full param check");
       assert_almost_equal(myModel.getFullParameter().getSize(), 5, 0, 0, "in kronecker param size check");
       assert_almost_equal(myModel.getFullParameterDescription().getSize(), 5, 0, 0, "in kronecker param description size check");
       Indices active(3);
@@ -465,7 +479,7 @@ int main(int, char *[])
       Bool checkDesc = myModel.getFullParameterDescription() == description;
       if (!checkDesc)
         throw TestFailed(OSS() << "descriptions differ");
-      }
+    }
   }
   catch (TestFailed & ex)
   {

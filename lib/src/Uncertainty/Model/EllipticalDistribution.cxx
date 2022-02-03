@@ -477,7 +477,8 @@ void EllipticalDistribution::update()
     }
     // In the case where the matrix is not numerically SPD, try a unique regularization loop
     // as it should succeed (otherwise the covariance matrix is truly non SPD)
-    catch(const NotSymmetricDefinitePositiveException & ex)
+    // Here we use a generic exception as different exceptions may be thrown
+    catch(const Exception &)
     {
       Scalar largestEV = 0.0;
       (void) shape_.getImplementation()->computeLargestEigenValueModuleSym(largestEV, 10, 1e-2);
@@ -485,13 +486,13 @@ void EllipticalDistribution::update()
         R_(i, i) += largestEV * SpecFunc::Precision;
       // This time throw if the decomposition fails
       try
-        {
-          cholesky_ = R_.computeCholesky();
-        }
-      catch (const NotSymmetricDefinitePositiveException & ex)
-        {
-          throw InvalidArgumentException(HERE) << "The correlation matrix must be definite positive R=" << R_;
-        } // Second decomposition
+      {
+        cholesky_ = R_.computeCholesky();
+      }
+      catch (const Exception &)
+      {
+        throw InvalidArgumentException(HERE) << "The correlation matrix must be definite positive R=" << R_;
+      } // Second decomposition
     } // First decomposition
     inverseCholesky_ = cholesky_.solveLinearSystem(IdentityMatrix(dimension)).getImplementation();
     // Inverse the correlation matrix R = D^(-1).L.L'.D^(-1)

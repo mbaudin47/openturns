@@ -24,7 +24,7 @@
 #include "openturns/SpecFunc.hxx"
 #include "openturns/HMatrix.hxx"
 #include "openturns/HMatrixFactory.hxx"
-#include "openturns/TBB.hxx"
+#include "openturns/TBBImplementation.hxx"
 
 BEGIN_NAMESPACE_OPENTURNS
 
@@ -61,7 +61,7 @@ DiracCovarianceModel::DiracCovarianceModel(const UnsignedInteger inputDimension)
 {
   // Remove the scale from the active parameter
   activeParameter_ = Indices(outputDimension_);
-  activeParameter_.fill();
+  activeParameter_.fill(inputDimension_);
   isStationary_ = true;
 }
 
@@ -76,7 +76,7 @@ DiracCovarianceModel::DiracCovarianceModel(const UnsignedInteger inputDimension,
 
   // Remove the scale from the active parameter
   activeParameter_ = Indices(outputDimension_);
-  activeParameter_.fill();
+  activeParameter_.fill(inputDimension_);
   isStationary_ = true;
 }
 
@@ -95,7 +95,7 @@ DiracCovarianceModel::DiracCovarianceModel(const UnsignedInteger inputDimension,
 
   // Remove the scale from the active parameter
   activeParameter_ = Indices(outputDimension_);
-  activeParameter_.fill();
+  activeParameter_.fill(inputDimension_);
   isStationary_ = true;
 }
 
@@ -120,7 +120,7 @@ DiracCovarianceModel::DiracCovarianceModel(const UnsignedInteger inputDimension,
 
   // Remove the scale from the active parameter
   activeParameter_ = Indices(outputDimension_);
-  activeParameter_.fill();
+  activeParameter_.fill(inputDimension_);
   isStationary_ = true;
 }
 
@@ -171,7 +171,7 @@ Scalar DiracCovarianceModel::computeAsScalar(const Point &tau) const
 }
 
 Scalar DiracCovarianceModel::computeAsScalar(const Collection<Scalar>::const_iterator &s_begin,
-                                             const Collection<Scalar>::const_iterator &t_begin) const
+    const Collection<Scalar>::const_iterator &t_begin) const
 {
   if (outputDimension_ > 1)
     throw InvalidArgumentException(HERE) << "Error : DiracCovarianceModel::computeAsScalar(tau) should be only used if output dimension is 1. Here, output dimension = " << outputDimension_;
@@ -220,7 +220,7 @@ struct DiracCovarianceModelDiscretizePolicy
     , dimension_(model.getOutputDimension())
   {}
 
-  inline void operator()(const TBB::BlockedRange<UnsignedInteger> & r) const
+  inline void operator()(const TBBImplementation::BlockedRange<UnsignedInteger> & r) const
   {
     for (UnsignedInteger index = r.begin(); index != r.end(); ++index)
     {
@@ -238,7 +238,7 @@ CovarianceMatrix DiracCovarianceModel::discretize(const Sample & vertices) const
     throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::discretize, the given sample has a dimension=" << vertices.getDimension()
                                          << " different from the input dimension=" << inputDimension_;
 
-  if (vertices.getSize() == 0)
+  if (!(vertices.getSize() > 0))
     throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::discretize, the given sample has a size 0";
 
   const UnsignedInteger size = vertices.getSize();
@@ -247,7 +247,7 @@ CovarianceMatrix DiracCovarianceModel::discretize(const Sample & vertices) const
 
   const DiracCovarianceModelDiscretizePolicy policy( vertices, covarianceMatrix, *this );
   // The loop is over the lower block-triangular part
-  TBB::ParallelFor( 0, size, policy );
+  TBBImplementation::ParallelFor( 0, size, policy );
 
   return covarianceMatrix;
 }
@@ -269,7 +269,7 @@ struct DiracCovarianceModelDiscretizeAndFactorizePolicy
     , dimension_(model.getOutputDimension())
   {}
 
-  inline void operator()( const TBB::BlockedRange<UnsignedInteger> & r ) const
+  inline void operator()( const TBBImplementation::BlockedRange<UnsignedInteger> & r ) const
   {
     for (UnsignedInteger index = r.begin(); index != r.end(); ++index)
     {
@@ -287,7 +287,7 @@ TriangularMatrix DiracCovarianceModel::discretizeAndFactorize(const Sample & ver
     throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::discretize, the given sample has a dimension=" << vertices.getDimension()
                                          << " different from the input dimension=" << inputDimension_;
 
-  if (vertices.getSize() == 0)
+  if (!(vertices.getSize() > 0))
     throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::discretize, the given sample has a size 0";
 
   const UnsignedInteger size = vertices.getSize();
@@ -296,7 +296,7 @@ TriangularMatrix DiracCovarianceModel::discretizeAndFactorize(const Sample & ver
 
   const DiracCovarianceModelDiscretizeAndFactorizePolicy policy( vertices, covarianceFactor, *this );
   // The loop is over the lower block-triangular part
-  TBB::ParallelFor( 0, size, policy );
+  TBBImplementation::ParallelFor( 0, size, policy );
 
   return covarianceFactor;
 }
@@ -307,9 +307,9 @@ Sample DiracCovarianceModel::discretizeRow(const Sample & vertices,
   if (vertices.getDimension() != inputDimension_)
     throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::discretizeRow, the given sample has a dimension=" << vertices.getDimension()
                                          << " different from the input dimension=" << inputDimension_;
-  if (vertices.getSize() == 0)
+  if (!(vertices.getSize() > 0))
     throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::discretizeRow, the given sample has a size 0";
-  if (p >= vertices.getSize())
+  if (!(p < vertices.getSize()))
     throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::discretizeRow, the index p should be lower or equal to " << vertices.getSize() - 1
                                          << ", here, p=" << p;
 
@@ -368,19 +368,29 @@ Matrix DiracCovarianceModel::partialGradient(const Point & s,
 /* Parameters accessor */
 void DiracCovarianceModel::setFullParameter(const Point & parameters)
 {
-  if (parameters.getDimension() != outputDimension_)
-    throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::setParameter, parameters should be of size " << outputDimension_ << ", here, parameters dimension = " << parameters.getDimension();
-  setAmplitude(parameters);
+  if (parameters.getDimension() != inputDimension_ + outputDimension_)
+    throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::setParameter, parameters should be of size " << inputDimension_ + outputDimension_ << ", here, parameters dimension = " << parameters.getDimension();
+  Point scale(inputDimension_);
+  std::copy(parameters.begin(), parameters.begin() + inputDimension_, scale.begin());
+  setScale(scale);
+  Point amplitude(outputDimension_);
+  std::copy(parameters.begin() + inputDimension_, parameters.end(), amplitude.begin());
+  setAmplitude(amplitude);
 }
 
 Point DiracCovarianceModel::getFullParameter() const
 {
-  return getAmplitude();
+  Point parameter(inputDimension_ + outputDimension_);
+  std::copy(scale_.begin(), scale_.end(), parameter.begin());
+  std::copy(amplitude_.begin(), amplitude_.end(), parameter.begin() + inputDimension_);
+  return parameter;
 }
 
 Description DiracCovarianceModel::getFullParameterDescription() const
 {
   Description description(0);
+  for (UnsignedInteger j = 0; j < inputDimension_; ++j)
+    description.add(OSS() << "scale_" << j);
   for (UnsignedInteger j = 0; j < outputDimension_; ++j)
     description.add(OSS() << "amplitude_" << j);
   return description;
@@ -403,7 +413,7 @@ void DiracCovarianceModel::setAmplitude(const Point & amplitude)
   // Check positivity of amplitude
   for (UnsignedInteger i = 0; i < outputDimension_; ++i)
   {
-    if (amplitude[i] <= 0)
+    if (!(amplitude[i] > 0))
       throw InvalidArgumentException(HERE) << "In DiracCovarianceModel::setAmplitude, amplitude should be stricly positive but the #" << i << " component equals " << amplitude[i];
   }
   amplitude_ = amplitude;
@@ -424,6 +434,7 @@ String DiracCovarianceModel::__repr__() const
 {
   OSS oss;
   oss << "class=" << DiracCovarianceModel::GetClassName()
+      << ", scale=" << scale_
       << ", amplitude=" << amplitude_
       << ", spatialCorrelation=" << outputCorrelation_;
   return oss;
