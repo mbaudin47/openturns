@@ -25,7 +25,7 @@ outputSample: 2-d sequence of float
 distribution : :class:`~openturns.Distribution`
     Distribution of the random vector :math:`\vect{X}` of dimension :math:`n_X`.
     When the *distribution* is unspecified, the
-    :meth:`~openturns.MetaModel.BuildDistribution` static
+    :meth:`~openturns.MetaModelAlgorithm.BuildDistribution` static
     method is evaluated on the *inputSample*.
 adaptiveStrategy : :class:`~openturns.AdaptiveStrategy`
     Strategy of selection of the different terms of the multivariate basis.
