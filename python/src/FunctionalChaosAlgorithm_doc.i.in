@@ -38,68 +38,80 @@ FunctionalChaosResult
 
 Notes
 -----
-This class create a functional chaos expansion or polynomial
+This class creates a functional chaos expansion or polynomial
 chaos expansion (PCE) based on an input and output
 sample of the physical model.
-More details on this type of surrogate models are presented in :ref:`functional_chaos_`.
+More details on this type of surrogate models are presented in :ref:`functional_chaos`.
 Once the expansion is computed, the :class:`~openturns.FunctionalChaosRandomVector`
 class provides methods to get the mean and variance of the PCE.
 Moreover, the :class:`~openturns.FunctionalChaosSobolIndices` provides Sobol' indices
 of the PCE.
 
-Consider :math:`\vect{Y} = g(\vect{X})` with :math:`g: \Rset^d \rightarrow \Rset^p`, 
-:math:`\vect{X} \sim \cL_{\vect{X}}` and :math:`\vect{Y}` with finite variance: 
-:math:`g\in L_{\cL_{\vect{X}}}^2(\Rset^d, \Rset^p)`.
+We consider the output random vector :math:`\vect{Y} = g(\vect{X})` where 
+:math:`g: \Rset^{n_X} \rightarrow \Rset^{n_Y}` is the physical model, 
+:math:`\vect{X} \sim \cL_{\vect{X}}` is the physical input,
+:math:`\cL_{\vect{X}}` is the distribution of the physical input random vector,
+:math:`n_X \in \Nset` is the input dimension, 
+:math:`n_Y \in \Nset` is the output dimension, 
+and :math:`\vect{Y}` with finite variance i.e.
+:math:`g\in L_{\cL_{\vect{X}}}^2(\Rset^{n_X}, \Rset^{n_Y})`.
 
 When the dimension of the output is greater than 1, i.e. when
-:math:`p>1`, the functional chaos algorithm is used on each marginal 
-of :math:`\vect{Y}`, using the same multivariate orthonormal basis for all the marginals. 
+:math:`n_Y > 1`, the functional chaos algorithm is used on each marginal 
+of :math:`\vect{Y}`, using the same multivariate orthonormal basis for
+all the marginals. 
 Thus, the algorithm is detailed here for a scalar output :math:`Y` and 
-:math:`g: \Rset^d \rightarrow \Rset`.
+:math:`g: \Rset^{n_X} \rightarrow \Rset`.
 
-Let :math:`T: \Rset^d \rightarrow \Rset^d` be an isoprobabilistic transformation
+Let :math:`T: \Rset^{n_X} \rightarrow \Rset^{n_X}` be an isoprobabilistic transformation
 such that :math:`\vect{Z} = T(\vect{X}) \sim \mu` where :math:`\mu` is the
 distribution of the standardized random vector :math:`\vect{Z}`.
-The distribution is called the **measure** below. 
+The distribution is called the *measure* below. 
 This distribution defines the scalar product that defines the orthogonality
 property of the functional basis.
-We note :math:`h = g \circ T^{-1}`, then :math:`h \in L_{\mu}^2(\Rset^d, \Rset)`.
+We note :math:`h = g \circ T^{-1}`, then :math:`h \in L_{\mu}^2(\Rset^{n_X}, \Rset)`.
 
 Let :math:`(\Psi_k)_{k \in \Nset}` be an orthonormal multivariate basis of 
-:math:`L^2_{\mu}(\Rset^d,\Rset)`.
-
-Then the functional chaos decomposition of *h* writes:
-
-.. math::
-
-    h = g\circ T^{-1} = \sum_{k=0}^{\infty} \vect{\alpha}_k \Psi_k 
-
-
-which can be truncated to the finite set :math:`K \in \Nset`:
+:math:`L^2_{\mu}(\Rset^{n_X},\Rset)`.
+Then the functional chaos decomposition of *h* is:
 
 .. math::
 
-    \tilde{h} =  \sum_{k \in K} \vect{\alpha}_k \Psi_k 
+    h = g\circ T^{-1} = \sum_{k=0}^{\infty} \vect{a}_k \Psi_k 
 
 
-The approximation :math:`\tilde{h}` can be used to build an efficient random 
-generator of :math:`Y` based on the random vector :math:`\vect{Z}`. 
-It writes:
+which can be truncated to the finite set :math:`\cK \subset \Nset`:
 
 .. math::
 
-    \tilde{Y} = \tilde{h}(\vect{Z})
+    \widetilde{h} =  \sum_{k \in \cK} \vect{a}_k \Psi_k 
 
-The functional chaos decomposition can be used to build a meta model of *g*, 
-which writes:
+The approximation :math:`\widetilde{h}` can be used to build an efficient
+random generator of :math:`Y` based on the random vector :math:`\vect{Z}`,
+using the equation:
 
 .. math::
 
-    \tilde{g} = \tilde{h} \circ T
+    \widetilde{Y} = \widetilde{h}(\vect{Z})
+
+This equation can be used to simulate independent random observations
+from the PCE.
+This can be done by first simulating independent observations from
+the distribution of the standardized random vector :math:`\vect{Z}`,
+then push forward these observations through the expansion.
+See the :class:`~openturns.FunctionalChaosRandomVector` class
+for more details on this topic.
+
+The functional chaos decomposition can be used to build a meta model of *g*,
+using the equation:
+
+.. math::
+
+    \widetilde{g} = \widetilde{h} \circ T
 
 If the basis :math:`(\Psi_k)_{k \in \Nset}` has been obtained by tensorisation of
 univariate orthonormal basis, then the distribution :math:`\mu` writes  
-:math:`\mu = \prod_{i=1}^d \mu_i`. In that case only, the Sobol indices can
+:math:`\mu = \prod_{i=1}^{n_X} \mu_i`. In that case only, the Sobol indices can
 easily be deduced from the coefficients :math:`\alpha_k`.
 
 Three steps are required in order to create a functional chaos algorithm.
@@ -123,7 +135,7 @@ The univariate bases may be:
 Furthermore, the numerotation of the multivariate orthonormal basis :math:`(\Psi_k(\vect{z}))_k` 
 is given by an enumerate function which defines a regular way to generate the collection of degres 
 used for the univariate polynomials : an enumerate function represents a bijection 
-:math:`\Nset \rightarrow \Nset^d`. See :class:`~openturns.LinearEnumerateFunction` or :class:`~openturns.HyperbolicAnisotropicEnumerateFunction` 
+:math:`\Nset \rightarrow \Nset^{n_X}`. See :class:`~openturns.LinearEnumerateFunction` or :class:`~openturns.HyperbolicAnisotropicEnumerateFunction` 
 for more details.
 
 **Step 2 - Truncation strategy of the multivariate orthonormal basis**: a
@@ -135,12 +147,12 @@ and :class:`~openturns.CleaningStrategy`.
 
 **Step 3 -  Evaluation strategy of the coefficients**: a
 strategy must be chosen for the estimation of te coefficients :math:`\alpha_k`. 
-The vector :math:`\vect{\alpha} = (\alpha_k)_{k \in K}` is equivalently defined by:
+The vector :math:`\vect{a} = (\alpha_k)_{k \in K}` is equivalently defined by:
 
 .. math::
     :label: quadEr
 
-    \vect{\alpha} = \argmin_{\vect{\alpha} \in \Rset^K}\Expect{\left( g \circ T^{-1}(\vect{Z}) - \sum_{k \in K} \alpha_k \Psi_k (\vect{Z})\right)^2}
+    \vect{a} = \argmin_{\vect{a} \in \Rset^K}\Expect{\left( g \circ T^{-1}(\vect{Z}) - \sum_{k \in K} \alpha_k \Psi_k (\vect{Z})\right)^2}
 
 or
 
@@ -160,6 +172,7 @@ model with the *k-th* element of the orthonormal basis :math:`(\Psi_k)_{k \in \N
 For more details on the pce based on quadrature, see the :class:`~openturns.IntegrationStrategy` class.
 
 **Default settings for the adaptive strategy**
+
 When the *adaptiveStrategy* is unspecified, the `FunctionalChaosAlgorithm-QNorm` parameter
 of the :class:`~openturns.ResourceMap` is used.
 If this parameter is equal to 1, then the :class:`~openturns.LinearEnumerateFunction` class
@@ -171,6 +184,24 @@ Otherwise, the `FunctionalChaosAlgorithm-MaximumTotalDegree` key of the
 :class:`~openturns.ResourceMap` is used to compute the basis size using the `getBasisSizeFromTotalDegree`
 method of the orthogonal basis.
 Finally, the :class:`~openturns.FixedStrategy` class is used.
+
+**Default settings for the projection strategy**
+
+When the *projectionStrategy* is unspecified, the 
+`FunctionalChaosAlgorithm-Sparse` key of the :class:`~openturns.ResourceMap` is used.
+If it is false, then the :class:`~openturns.LeastSquaresStrategy` class is
+used, which produces a full PCE, without model selection.
+Otherwise, a :class:`~openturns.LARS` PCE is created, i.e.
+a sparse PCE is computed using model selection.
+In this case, the `FunctionalChaosAlgorithm-FittingAlgorithm`
+key of the :class:`~openturns.ResourceMap` is used.
+- If this key is equal to 'CorrectedLeaveOneOut', then the
+  :class:`~openturns.CorrectedLeaveOneOut` criteria is used.
+- If this key is equal to 'KFold', then the
+ :class:`~openturns.KFold` criteria is used.
+- Otherwise, an exception is produced.
+
+
 
 Examples
 --------
@@ -191,7 +222,7 @@ Build the multivariate orthonormal basis:
 >>> productBasis = ot.OrthogonalProductPolynomialFactory(polyColl, enumerateFunction)
 
 Define the  strategy to truncate the multivariate orthonormal basis:
-We choose all the polynomials of degree <= 4
+We choose all the polynomials of degree lower or equal to 4.
 
 >>> degree = 4
 >>> indexMax = enumerateFunction.getBasisSizeFromTotalDegree(degree)
