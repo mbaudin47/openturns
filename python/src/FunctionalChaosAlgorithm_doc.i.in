@@ -243,7 +243,7 @@ Define the evaluation strategy of the  coefficients:
 
 Create the chaos algorithm:
 
->>> algo = ot.FunctionalChaosAlgorithm(inputSample, outputSample, distribution, adaptiveStrategy,
+>>> algo = ot.FunctionalChaosAlgorithm(inputSample, outputSample, distribution, adaptiveStrategy, \
 ...                                    projectionStrategy)
 >>> algo.run()
 
