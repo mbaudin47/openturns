@@ -209,16 +209,16 @@ Create the model:
 
 >>> import openturns as ot
 >>> ot.RandomGenerator.SetSeed(0)
->>> inputDim = 1
->>> model = ot.SymbolicFunction(['x'], ['x*sin(x)'])
->>> distribution = ot.JointDistribution([ot.Uniform()]*inputDim)
+>>> inputDimension = 1
+>>> model = ot.SymbolicFunction(['x'], ['x * sin(x)'])
+>>> distribution = ot.ComposedDistribution([ot.Uniform()] * inputDimension)
 
 Build the multivariate orthonormal basis:
 
->>> polyColl = [0.0]*inputDim
+>>> polyColl = [0.0] * inputDimension
 >>> for i in range(distribution.getDimension()):
 ...     polyColl[i] = ot.StandardDistributionPolynomialFactory(distribution.getMarginal(i))
->>> enumerateFunction = ot.LinearEnumerateFunction(inputDim)
+>>> enumerateFunction = ot.LinearEnumerateFunction(inputDimension)
 >>> productBasis = ot.OrthogonalProductPolynomialFactory(polyColl, enumerateFunction)
 
 Define the  strategy to truncate the multivariate orthonormal basis:
