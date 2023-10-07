@@ -18,19 +18,23 @@ Available constructors:
 
 Parameters
 ----------
-inputSample, outputSample : 2-d sequence of float
-    Sample of the input - output random vectors
+inputSample: 2-d sequence of float
+    Sample of the input random vectors with size :math:`n` and dimension :math:`n_X`.
+outputSample: 2-d sequence of float
+    Sample of the output random vectors with size :math:`n` and dimension :math:`n_Y`.
 distribution : :class:`~openturns.Distribution`
-    Distribution of the random vector :math:`\vect{X}`
+    Distribution of the random vector :math:`\vect{X}` of dimension :math:`n_X`.
+    When the *distribution* is unspecified, the
+    :meth:`~openturns.MetaModel.BuildDistribution` static
+    method is evaluated on the *inputSample*.
 adaptiveStrategy : :class:`~openturns.AdaptiveStrategy`
     Strategy of selection of the different terms of the multivariate basis.
 projectionStrategy : :class:`~openturns.ProjectionStrategy`
     Strategy of evaluation of the coefficients :math:`\alpha_k`
 weights : sequence of float
-    Weights :math:`\omega_i` associated to the data base
-
-    Default values are :math:`\omega_i = \frac{1}{N}` where 
-    *N=inputSample.getSize()*
+    Weights :math:`(w_i)_{i = 1, ..., n}` associated to the output
+    sample, where :math:`n` is the sample size.
+    Default values are :math:`w_i = \frac{1}{n}` for :math:`i = 1, ..., n`. 
 
 See also
 --------
@@ -171,6 +175,9 @@ The equation :eq:`scalProd` means that :math:`\alpha_k` is the scalar product of
 model with the *k-th* element of the orthonormal basis :math:`(\Psi_k)_{k \in \Nset}`.
 For more details on the pce based on quadrature, see the :class:`~openturns.IntegrationStrategy` class.
 
+**Default settings for the distribution**
+
+
 **Default settings for the adaptive strategy**
 
 When the *adaptiveStrategy* is unspecified, the `FunctionalChaosAlgorithm-QNorm` parameter
@@ -195,10 +202,11 @@ Otherwise, a :class:`~openturns.LARS` PCE is created, i.e.
 a sparse PCE is computed using model selection.
 In this case, the `FunctionalChaosAlgorithm-FittingAlgorithm`
 key of the :class:`~openturns.ResourceMap` is used.
+
 - If this key is equal to 'CorrectedLeaveOneOut', then the
   :class:`~openturns.CorrectedLeaveOneOut` criteria is used.
 - If this key is equal to 'KFold', then the
- :class:`~openturns.KFold` criteria is used.
+  :class:`~openturns.KFold` criteria is used.
 - Otherwise, an exception is produced.
 
 
@@ -297,7 +305,7 @@ In the next example, we use :class:`~openturns.LARS` to create a
 sparse PCE.
 
 >>> selection = ot.LeastSquaresMetaModelSelectionFactory(ot.LARS(), ot.CorrectedLeaveOneOut())
->>> projectionStrategy = ot.LeastSquaresStrategy(inputSample, weights, outputSample, selection)
+>>> projectionStrategy = ot.LeastSquaresStrategy(inputSample, outputSample, selection)
 >>> algo = ot.FunctionalChaosAlgorithm(inputSample, outputSample, distribution, adaptiveStrategy, projectionStrategy)"
 
 // ---------------------------------------------------------------------
