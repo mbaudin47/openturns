@@ -194,6 +194,7 @@ view = otv.View(graph)
 # For each observation in the training set, the residual is the vertical distance between the model and the observation.
 
 # %%
+# sphinx_gallery_thumbnail_number = 4
 graph = ot.Graph(
     "Least squares minimizes the sum of the squares of the vertical bars",
     "x",
