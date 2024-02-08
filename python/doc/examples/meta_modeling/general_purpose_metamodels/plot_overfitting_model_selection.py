@@ -50,7 +50,6 @@ g = ot.SymbolicFunction(["x"], ["sin(2*pi_*x)"])
 graph = ot.Graph("Polynomial curve fitting", "x", "y", True, "upper right")
 # The "unknown" function
 curve = g.draw(0, 1)
-#MBN: curve.setColors(["green"])
 curve.setLegends(['"Unknown" function'])
 graph.add(curve)
 view = otv.View(graph)
@@ -96,7 +95,6 @@ graph = ot.Graph("Polynomial curve fitting", "x", "y", True, "upper right")
 # The "unknown" function
 curve = g.draw(0, 1)
 curve.setLegends(['"Unknown" function'])
-#MBN: curve.setColors(["green"])
 graph.add(curve)
 # Training set
 cloud = ot.Cloud(x_train, y_train)
@@ -176,17 +174,15 @@ graph = ot.Graph("Polynomial curve fitting", "x", "y", True, "upper right")
 # The "unknown" function
 curve = g.draw(0, 1)
 curve.setLegends(['"Unknown" function'])
-#MBN: curve.setColors(["green"])
 graph.add(curve)
 # Training set
 cloud = ot.Cloud(x_train, y_train)
 cloud.setPointStyle("circle")
-cloud.setLegend("Observations")  #MBN
+cloud.setLegend("Observations")
 graph.add(cloud)
 # Predictions
 curve = ot.Curve(x_test, y_test)
 curve.setLegend("Polynomial Degree = %d" % (total_degree))
-#MBN: curve.setColor("blue")
 graph.add(curve)
 view = otv.View(graph)
 
@@ -205,25 +201,24 @@ graph = ot.Graph(
     True,
     "upper right",
 )
-residualsColor = ot.Drawable.BuildDefaultPalette(3)[2]  #MBN
+residualsColor = ot.Drawable.BuildDefaultPalette(3)[2]
 # Predictions
 curve = ot.Curve(x_test, y_test)
 curve.setLegend("Polynomial Degree = %d" % (total_degree))
-#MBN: curve.setColor("blue")
 graph.add(curve)
 # Training set observations
 cloud = ot.Cloud(x_train, y_train)
 cloud.setPointStyle("circle")
-cloud.setLegend("Observations")  #MBN
+cloud.setLegend("Observations")
 graph.add(cloud)
 # Errors
 ypredicted_train = responseSurface(basis(x_train))
 for i in range(n_train):
     curve = ot.Curve([x_train[i], x_train[i]], [y_train[i], ypredicted_train[i]])
-    curve.setColor(residualsColor)  #MBN
+    curve.setColor(residualsColor)
     curve.setLineWidth(2)
     if i == 0:
-        curve.setLegend("Residual")  #MBN
+        curve.setLegend("Residual")
     graph.add(curve)
 view = otv.View(graph)
 
@@ -264,7 +259,6 @@ def myPolynomialCurveFittingGraph(total_degree, x_train, y_train):
     graph = ot.Graph("Polynomial curve fitting", "x", "y", True, "upper right")
     # The "unknown" function
     curve = g.draw(0, 1)
-    #MBN: curve.setColors(["green"])
     graph.add(curve)
     # Training set
     cloud = ot.Cloud(x_train, y_train)
@@ -274,7 +268,6 @@ def myPolynomialCurveFittingGraph(total_degree, x_train, y_train):
     # Predictions
     curve = ot.Curve(x_test, ypredicted_test)
     curve.setLegend("Degree = %d" % (total_degree))
-    #MBN: curve.setColor("blue")
     graph.add(curve)
     return graph
 
