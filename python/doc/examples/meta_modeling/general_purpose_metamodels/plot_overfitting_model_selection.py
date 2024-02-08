@@ -50,7 +50,7 @@ g = ot.SymbolicFunction(["x"], ["sin(2*pi_*x)"])
 graph = ot.Graph("Polynomial curve fitting", "x", "y", True, "upper right")
 # The "unknown" function
 curve = g.draw(0, 1)
-curve.setColors(["green"])
+#MBN: curve.setColors(["green"])
 curve.setLegends(['"Unknown" function'])
 graph.add(curve)
 view = otv.View(graph)
@@ -86,7 +86,7 @@ noiseSample = noise.getSample(n_train)
 
 # %%
 # The following computes the observation as the sum of the function value and of the noise.
-# The couple (`x_train`,`y_train`) is the training set: it is used to compute the coefficients of the polynomial model.
+# The couple (`x_train`, `y_train`) is the training set: it is used to compute the coefficients of the polynomial model.
 
 # %%
 y_train = g(x_train) + noiseSample
@@ -95,7 +95,8 @@ y_train = g(x_train) + noiseSample
 graph = ot.Graph("Polynomial curve fitting", "x", "y", True, "upper right")
 # The "unknown" function
 curve = g.draw(0, 1)
-curve.setColors(["green"])
+curve.setLegends(['"Unknown" function'])
+#MBN: curve.setColors(["green"])
 graph.add(curve)
 # Training set
 cloud = ot.Cloud(x_train, y_train)
@@ -109,14 +110,12 @@ view = otv.View(graph)
 # --------------------------------------------------------
 #
 # Let :math:`y \in \mathbb{R}^n` be a vector of observations.
-#
 # The polynomial model is
 #
 # .. math::
 #    P(x) = \beta_0 + \beta_1 x + ... + \beta_p x^p,
 #
 # for any :math:`x\in\mathbb{R}`, where :math:`p` is the polynomial degree and :math:`\beta\in\mathbb{R}^{p+1}` is the vector of the coefficients of the model.
-#
 # Let :math:`n` be the training sample size and let :math:`x_1,...,x_n \in \mathbb{R}` be the abscissas of the training set.
 # The design matrix :math:`X \in \mathbb{R}^{n \times (p+1)}` is
 #
@@ -124,7 +123,6 @@ view = otv.View(graph)
 #    x_{i,j} = x^j_i,
 #
 # for :math:`i=1,...,n` and :math:`j=0,...,p`.
-#
 # The least squares solution is:
 #
 # .. math::
@@ -162,7 +160,11 @@ myLeastSquares.run()
 responseSurface = myLeastSquares.getMetaModel()
 
 # %%
-# The couple (`x_test`,`y_test`) is the test set: it is used to assess the quality of the polynomial model with points that were not used for training.
+# The test set
+# ------------
+
+# %%
+# The couple (`x_test`, `y_test`) is the test set: it is used to assess the quality of the polynomial model with points that were not used for training.
 
 # %%
 n_test = 50
@@ -173,21 +175,27 @@ y_test = responseSurface(basis(x_test))
 graph = ot.Graph("Polynomial curve fitting", "x", "y", True, "upper right")
 # The "unknown" function
 curve = g.draw(0, 1)
-curve.setColors(["green"])
+curve.setLegends(['"Unknown" function'])
+#MBN: curve.setColors(["green"])
 graph.add(curve)
 # Training set
 cloud = ot.Cloud(x_train, y_train)
 cloud.setPointStyle("circle")
+cloud.setLegend("Observations")  #MBN
 graph.add(cloud)
 # Predictions
 curve = ot.Curve(x_test, y_test)
 curve.setLegend("Polynomial Degree = %d" % (total_degree))
-curve.setColor("blue")
+#MBN: curve.setColor("blue")
 graph.add(curve)
 view = otv.View(graph)
 
 # %%
-# For each observation in the training set, the error is the vertical distance between the model and the observation.
+# Compute the residuals
+# ---------------------
+
+# %%
+# For each observation in the training set, the residual is the vertical distance between the model and the observation.
 
 # %%
 graph = ot.Graph(
@@ -197,21 +205,25 @@ graph = ot.Graph(
     True,
     "upper right",
 )
+residualsColor = ot.Drawable.BuildDefaultPalette(3)[2]  #MBN
 # Predictions
 curve = ot.Curve(x_test, y_test)
 curve.setLegend("Polynomial Degree = %d" % (total_degree))
-curve.setColor("blue")
+#MBN: curve.setColor("blue")
 graph.add(curve)
 # Training set observations
 cloud = ot.Cloud(x_train, y_train)
 cloud.setPointStyle("circle")
+cloud.setLegend("Observations")  #MBN
 graph.add(cloud)
 # Errors
 ypredicted_train = responseSurface(basis(x_train))
 for i in range(n_train):
     curve = ot.Curve([x_train[i], x_train[i]], [y_train[i], ypredicted_train[i]])
-    curve.setColor("green")
+    curve.setColor(residualsColor)  #MBN
     curve.setLineWidth(2)
+    if i == 0:
+        curve.setLegend("Residual")  #MBN
     graph.add(curve)
 view = otv.View(graph)
 
@@ -252,7 +264,7 @@ def myPolynomialCurveFittingGraph(total_degree, x_train, y_train):
     graph = ot.Graph("Polynomial curve fitting", "x", "y", True, "upper right")
     # The "unknown" function
     curve = g.draw(0, 1)
-    curve.setColors(["green"])
+    #MBN: curve.setColors(["green"])
     graph.add(curve)
     # Training set
     cloud = ot.Cloud(x_train, y_train)
@@ -261,8 +273,8 @@ def myPolynomialCurveFittingGraph(total_degree, x_train, y_train):
     graph.add(cloud)
     # Predictions
     curve = ot.Curve(x_test, ypredicted_test)
-    curve.setLegend("Polynomial Degree = %d" % (total_degree))
-    curve.setColor("blue")
+    curve.setLegend("Degree = %d" % (total_degree))
+    #MBN: curve.setColor("blue")
     graph.add(curve)
     return graph
 
@@ -271,7 +283,7 @@ def myPolynomialCurveFittingGraph(total_degree, x_train, y_train):
 # In order to see the effect of the polynomial degree, we compare the polynomial fit with degrees equal to 0 (constant), 1 (linear), 3 (cubic) and 9 (enneagonic ?).
 
 # %%
-fig = pl.figure(figsize=(12, 9))
+fig = pl.figure(figsize=(10, 7))  # MBN
 _ = fig.suptitle("Polynomial curve fitting")
 ax_1 = fig.add_subplot(2, 2, 1)
 _ = ot.viewer.View(
@@ -415,7 +427,7 @@ view = otv.View(graph)
 
 # %%
 total_degree = 9
-fig = pl.figure(figsize=(12, 9))
+fig = pl.figure(figsize=(10, 7))  # MBN
 _ = fig.suptitle("Polynomial curve fitting")
 #
 ax_1 = fig.add_subplot(2, 2, 1)
@@ -436,6 +448,5 @@ _ = ot.viewer.View(
     axes=[ax_2],
 )
 
-pl.show()
 # %%
 # We see that the polynomial oscillates with a dataset with size 11, but does not with the larger dataset: increasing the training dataset mitigates the oscillations.
