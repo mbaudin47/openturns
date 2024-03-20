@@ -56,14 +56,14 @@ We consider the output random vector :math:`\vect{Y} = g(\vect{X})` where
 :math:`\vect{X} \sim \cL_{\vect{X}}` is the physical input,
 :math:`\cL_{\vect{X}}` is the distribution of the physical input random vector,
 :math:`n_X \in \Nset` is the input dimension, 
-:math:`n_Y \in \Nset` is the output dimension, 
-and :math:`\vect{Y}` with finite variance i.e.
+and :math:`n_Y \in \Nset` is the output dimension.
+The output random vector :math:`\vect{Y}` must have finite variance i.e.
 :math:`g\in L_{\cL_{\vect{X}}}^2(\Rset^{n_X}, \Rset^{n_Y})`.
 
 When the dimension of the output is greater than 1, i.e. when
 :math:`n_Y > 1`, the functional chaos algorithm is used on each marginal 
 of :math:`\vect{Y}`, using the same multivariate orthonormal basis for
-all the marginals. 
+all marginals. 
 Thus, the algorithm is detailed here for a scalar output :math:`Y` and 
 :math:`g: \Rset^{n_X} \rightarrow \Rset`.
 
@@ -93,7 +93,7 @@ which can be truncated to the finite set :math:`\cK \subset \Nset`:
 
 .. math::
 
-    \widetilde{h} =  \sum_{k \in \cK} \vect{a}_k \Psi_k 
+    \widetilde{h} =  \sum_{k \in \cK} \vect{a}_k \Psi_k.
 
 The approximation :math:`\widetilde{h}` can be used to build an efficient
 random generator of :math:`Y` based on the random vector :math:`\vect{Z}`,
@@ -101,17 +101,17 @@ using the equation:
 
 .. math::
 
-    \widetilde{Y} = \widetilde{h}(\vect{Z})
+    \widetilde{Y} = \widetilde{h}(\vect{Z}).
 
 This equation can be used to simulate independent random observations
 from the PCE.
 This can be done by first simulating independent observations from
 the distribution of the standardized random vector :math:`\vect{Z}`,
-then push forward these observations through the expansion.
+then by pushing forward these observations through the expansion.
 See the :class:`~openturns.FunctionalChaosRandomVector` class
 for more details on this topic.
 
-The functional chaos decomposition can be used to build a meta model of *g*,
+The functional chaos decomposition can be used to build a surrogate model of *g*,
 using the equation:
 
 .. math::
@@ -119,20 +119,20 @@ using the equation:
     \widetilde{g} = \widetilde{h} \circ T
 
 If the basis :math:`(\Psi_k)_{k \in \Nset}` is computed using the tensor product of
-univariate orthonormal polynomials or functions, then the distribution :math:`\mu` writes  
+univariate orthonormal polynomials or functions, then the distribution :math:`\mu` is
 :math:`\mu = \prod_{i=1}^{n_X} \mu_i`. In that case only, the Sobol' indices can
 easily be deduced from the coefficients :math:`a_k`.
 Please see :class:`~openturns.FunctionalChaosSobolIndices` for more details on this topic.
 
 Three steps are required in order to create a functional chaos algorithm:
 
-- definition of the multivariate orthonormal basis;
-- truncation of the multivariate orthonormal basis;
-- evaluation of the coefficients.
+- define the multivariate orthonormal basis;
+- truncate the multivariate orthonormal basis;
+- evaluate the coefficients.
 
 These steps are presented in more detail below.
 
-**Step 1 - Definition of the multivariate orthonormal basis**: the
+**Step 1 - Define the multivariate orthonormal basis**: the
 multivariate orthonornal basis :math:`(\Psi_k(\vect{x}))_{k \in \Nset}` is built
 as the tensor product of orthonormal univariate families.
 
@@ -144,8 +144,8 @@ The univariate bases may be:
   arbitrary univariate distribution :math:`\mu_i` under some conditions. 
   For more details on this basis, see :class:`~openturns.StandardDistributionPolynomialFactory`;
 
-- Haar wavelets: they enable to approximate functions with discontinuities.
-  For more details on this basis, see :class:`~openturns.HaarWaveletFactory`;
+- Haar wavelets: they approximate functions with discontinuities.
+  For details on this basis, see :class:`~openturns.HaarWaveletFactory`;
 
 - Fourier series: for more details on this basis, see :class:`~openturns.FourierSeriesFactory`.
 
@@ -158,14 +158,14 @@ See :class:`~openturns.LinearEnumerateFunction` or
 :class:`~openturns.HyperbolicAnisotropicEnumerateFunction` for more details
 on this topic.
 
-**Step 2 - Truncation of the multivariate orthonormal basis**: a
+**Step 2 - Truncate the multivariate orthonormal basis**: a
 strategy must be chosen for the selection of the different terms of the
 multivariate basis. The selected terms are gathered in the subset *K*.
-For more details on the possible strategies, see :class:`~openturns.FixedStrategy`
+For information about the possible strategies, see :class:`~openturns.FixedStrategy`
 and :class:`~openturns.CleaningStrategy`.
 
-**Step 3 -  Evaluation of the coefficients**: a
-strategy must be chosen for the estimation of the coefficients :math:`a_k`. 
+**Step 3 -  Evaluate the coefficients**: a
+*projectionStrategy* must be chosen for the estimation of the coefficients :math:`a_k`. 
 The vector :math:`\vect{a} = (a_k)_{k \in \cK}` is equivalently defined
 using least squares:
 
