@@ -117,7 +117,7 @@ The functional chaos decomposition of *h* is (see [lemaitre2010]_ page 39):
 
     h = \sum_{k \geq 0} a_k \Psi_k.
 
-Let :math:`\cK \subset \Nset` be a subset of the coefficients
+Let :math:`\cK \subset \Nset` be a finite subset of the coefficients
 representing the truncation of the infinite series.
 Truncating this series can be done using one enumeration rule,
 as presented in :ref:`enumeration_strategy`.
