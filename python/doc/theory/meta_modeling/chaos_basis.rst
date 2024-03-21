@@ -94,7 +94,7 @@ Then, the meta model of *h* is the solution of:
 where :math:`\{a_k \in \Rset\}_{k\in I_n}` are real coefficients.
 
 Several strategies are possible to compute the coefficients :math:`(a_k)_k` (see :ref:`response_surface`
-to get more details on the computation of the coefficents):
+to get more details on the computation of the coefficients):
 
 - The orthonormality property of the polynomial basis makes it easy to calculate the coefficients which
 are defined by scalar products (see :class:`~openturns.IntegrationExpansion`):

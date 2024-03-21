@@ -228,7 +228,7 @@ see  :ref:`response_surface` to get more details on:
 
 - the available constructions of the truncated multivariate orthogonal basis,
 
-- the computation of the coefficents.
+- the computation of the coefficients.
 
 
 Polynomial chaos expansion for independent variables
