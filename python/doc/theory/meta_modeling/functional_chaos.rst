@@ -34,7 +34,7 @@ We consider the output random vector:
     \vect{Y} = g(\vect{X})
 
 where :math:`g: \Rset^{n_X} \rightarrow \Rset^{n_Y}` is the model,
-:math:`\vect{X}` is the input random vector which distribution is 
+:math:`\vect{X}` is the input random vector which distribution is
 :math:`\mu_{\vect{X}}`,
 :math:`n_X \in \Nset` is the input dimension,
 :math:`n_Y \in \Nset` is the output dimension.
@@ -85,8 +85,9 @@ and the norm is defined by:
 
         \|f\|^2_{L^2(p_{\vect{X}})} = \Expect{\left[f(\vect{X})\right]^2} & = \int [f(\vect{z})]^2\, \mu_{\vect{Z}}(\vect{z}) d\vect{z} \\
             & = \sum_\vect{z} f^2(\vect{z}) \,\Prob{\vect{Z} = \vect{z}}
-            
-The basis :math:`(\Psi_k)_{k \in \Nset}` is orthonormal with respect to :math:`\mu_{\vect{Z}}` if it verifies the following properties: 
+
+The basis :math:`(\Psi_k)_{k \in \Nset}` is orthonormal with respect to :math:`\mu_{\vect{Z}}` if it
+verifies the following properties:
 
 .. math::
    :label: orthonorm
@@ -94,7 +95,7 @@ The basis :math:`(\Psi_k)_{k \in \Nset}` is orthonormal with respect to :math:`\
     \langle \Psi_i, \Psi_{j}\rangle  = \int \Psi_i\vect{z} \Psi_{j}\vect{z}d\vect{z} = \delta_{i,j}
 
 
-or: 
+or:
 
 .. math::
    :label: orthonormDisc
@@ -157,7 +158,9 @@ which is a least-squares otimization problem.
 
 
 
-The choice of the projection space :math:`\cP_n` and its basis :math:`(\Psi_k)_{k \in I_n}` is designed to ensure that the discretized problem :eq:`metaModeleh` is easy to solve (well-conditioned discrete problem).
+The choice of the projection space :math:`\cP_n` and its basis :math:`(\Psi_k)_{k \in I_n}` is
+designed to ensure that the discretized problem :eq:`metaModeleh` is easy to solve (well-conditioned
+discrete problem).
 In particular, the choice of basis has a major influence on the
 conditioning of the least-squares problem :eq:`metaModeleh`.
 
@@ -177,7 +180,8 @@ best predict the output, as presented in :ref:`polynomial_sparse_least_squares`.
 
 
 **In OpenTURNS**, we choose a basis :math:`(\Psi_k)_{k \in I_n}` which is orthonormal with
-respect to :math:`\mu_{\vect{Z}}`, so we have :eq:`orthonorm`. Furthermore, we require that the first element be:
+respect to :math:`\mu_{\vect{Z}}`, so we have :eq:`orthonorm`. Furthermore, we require that the
+first element be:
 
   .. math::
     :label: defPsi0
@@ -191,7 +195,10 @@ by orthogonality of the base, relation :eq:`defPsi0` implies in particular that:
 
        \Expect{\psi_{i}(\vect{Z})} = \Expect{\Psi_{i}(\vect{Z})\Psi_{0}(\vect{Z})}= 0\quad \forall i\neq 0
 
-The use of a basis orthonormal with respect to the measure :math:`\mu_{\vect{Z}}` facilitates the computation of the :math:`a_k` coefficients, transforming the least-squares problem into a scalar product calculation. In this case, the least-squares problem is equivalent to the computation of scalar products. The algorithmic cost of solving the problem is much lower.
+The use of a basis orthonormal with respect to the measure :math:`\mu_{\vect{Z}}` facilitates the
+computation of the :math:`a_k` coefficients, transforming the least-squares problem into a scalar product
+calculation. In this case, the least-squares problem is equivalent to the computation of scalar products.
+The algorithmic cost of solving the problem is much lower.
 
 
 The meta model :math:`\widetilde{h}` can be used to build an efficient
@@ -226,28 +233,34 @@ see  :ref:`response_surface` to get more details on:
 
 Polynomial chaos expansion for independent variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-OpenTURNS enables one to build the meta model called *polynomial chaos expansion* which makes the following choices: 
+OpenTURNS enables one to build the meta model called *polynomial chaos expansion* which makes the
+following choices:
 
 - the projection spaces :math:`\cP_n` are a sequence of nested polynomial subspaces:
   :math:`\cP_n \subset \cP_{n+1}`,
 
 - the particular basis of :math:`\cP_n` consists of the family of orthonormal polynomials with respect
-  to the measure :math:`\mu_{\vect{Z}}` if :math:`\mu_{\vect{Z}}` is such that the infinite sequel of its moments is defined.
-  
-Furthermore, to ensure :eq:`fermeturePn`, the measure :math:`\mu_{\vect{Z}}` needs to be uniquely defined by all its moments. 
-So, we poceed as follows: 
+  to the measure :math:`\mu_{\vect{Z}}` if :math:`\mu_{\vect{Z}}` is such that the infinite sequel of
+  its moments is defined.
+
+Furthermore, to ensure :eq:`fermeturePn`, the measure :math:`\mu_{\vect{Z}}` needs to be uniquely defined
+by all its moments. So, we poceed as follows:
 
 - if the measure :math:`\mu_{\vect{X}}` is uniquely defined by all its moments, we use :math:`T=Id(\Rset^{n_X})`,
 
 - if not, we use an iso-probabilistic transformation :math:`T` such that:
 
   .. math::
-     :label: measureMu 
+     :label: measureMu
 
      \vect{Z} = T(\vect{X})
 
-is a random vector distributed according to the measure :math:`\mu_{\vect{Z}}` which is uniquely defined by all its moments. 
-We also recommend to define :math:`\mu_{\vect{Z}}` with independent components in order to facilitate the creation of the orthonormal basis as the tensorization of univariate polynomial basis orthonormal with respect to its margins :math:`\mu_i` (see  :ref:`Polynomial chaos basis <chaos_basis>` and the classes s :class:`~openturns.OrthogonalUniVariatePolynomialFamily` and
+is a random vector distributed according to the measure :math:`\mu_{\vect{Z}}` which is uniquely defined
+by all its moments.
+We also recommend to define :math:`\mu_{\vect{Z}}` with independent components in order to facilitate
+the creation of the orthonormal basis as the tensorization of univariate polynomial basis orthonormal with
+respect to its margins :math:`\mu_i` (see  :ref:`Polynomial chaos basis <chaos_basis>` and the classes
+:class:`~openturns.OrthogonalUniVariatePolynomialFamily` and
 :class:`~openturns.OrthogonalUniVariatePolynomialFactory`):
 
   .. math::
@@ -258,24 +271,34 @@ We also recommend to define :math:`\mu_{\vect{Z}}` with independent components i
 Other chaos expansions for independent variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After having mapped the input random vector :math:`\vect{X}` into the random vector :math:`\vect{Z}` with independent components using  :math:`T` defined in :eq:`measureMu`, OpenTURNS enables one to use the Haar wavelet functions or the Fourier series as orthonormal basis with respect to each margin  :math:`\mu_i`.
+After having mapped the input random vector :math:`\vect{X}` into the random vector :math:`\vect{Z}`
+with independent components using  :math:`T` defined in :eq:`measureMu`, OpenTURNS enables one to use
+the Haar wavelet functions or the Fourier series as orthonormal basis with respect to each margin
+:math:`\mu_i`.
 
-The Haar wavelets basis is orthonormal with respect to the the :math:`\cU(0,1)` measure (see :class:`~openturns.HaarWaveletFactory`) and the Fourier series basis is orthonormal with respect to the :math:`\cU(-\pi, \pi)` measure (see :class:`~openturns.FourierSeriesFactory`).
+The Haar wavelets basis is orthonormal with respect to the the :math:`\cU(0,1)` measure (see
+:class:`~openturns.HaarWaveletFactory`) and the Fourier series basis is orthonormal with respect to
+the :math:`\cU(-\pi, \pi)` measure (see :class:`~openturns.FourierSeriesFactory`).
 
 
 Some chaos expansions for dependent variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When the components of the input random vector :math:`\vect{X}` are not independent, we can use an iso-probabilistic transformation to map :math:`\vect{X}` into :math:`\vect{Z}` with independent components. 
+When the components of the input random vector :math:`\vect{X}` are not independent, we can use an
+iso-probabilistic transformation to map :math:`\vect{X}` into :math:`\vect{Z}` with independent components. 
 
-It is also possible to build up a multivariate orthonormal basis with respect to the :math:`\mu_{\vect{X}}`  if it is uniquely defined by all its moments, as follows:
+It is also possible to build up a multivariate orthonormal basis with respect to the
+:math:`\mu_{\vect{X}}`  if it is uniquely defined by all its moments, as follows:
 
   .. math::
 
       \Psi_{\idx}(\vect{x}) \, \, = \,\,  K(\vect{x}) \;\prod_{i=1}^M \pi^{(i)}_{\alpha_{i}}(x_{i})
 
 
-where :math:`K(\vect{x})` is a function of the copula of :math:`\vect{X}` and :math:`\vect{\alpha} = (\alpha_1, \dots, \alpha_d)` a multi-index used to define the mutlivariate polynomial basis built as the tensorization of the univariate orthonormal polynomial basis with respect to :math:`\mu_i`  as follows:
+where :math:`K(\vect{x})` is a function of the copula of :math:`\vect{X}` and
+:math:`\vect{\alpha} = (\alpha_1, \dots, \alpha_d)` a multi-index used to define the mutlivariate
+polynomial basis built as the tensorization of the univariate orthonormal polynomial basis with
+respect to :math:`\mu_i`  as follows:
 
   .. math::
 
@@ -289,7 +312,8 @@ OpenTURNS enables one to use the following kernel:
      K(\vect{x}) = \dfrac{1}{\sqrt{c(\vect{x}}}
 
 
-where :math:`c` is the density of the copula of :math:`\vect{X}`. Then the orthonormal basis is called the `Soize-Ghanem` basis (see
+where :math:`c` is the density of the copula of :math:`\vect{X}`. Then the orthonormal basis is
+called the `Soize-Ghanem` basis (see
 :class:`~openturns.SoizeGhanemFactory`).
 
 
