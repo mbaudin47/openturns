@@ -53,9 +53,12 @@ As :math:`\vect{Z}` has independent components, we have:
 
      \mu_{\vect{Z}}(\vect{z})= \prod_{i=1}^d \mu_i(z_i)
 
-      
-Thus, the multivariate polynomial basis can be built using the *tensor product* of the univariate polynomial bases which are orthonormal with respect to
-the marginals of :math:`\mu_{\vect{Z}}`. Introducing the multi-index :math:`\vect{\alpha} = (\alpha_1, \dots, \alpha_d)` representing the marginal polynomial degrees, we built the basis of orthonormal polynomials with respect to :math:`\mu_{\vect{Z}}`
+
+Thus, the multivariate polynomial basis can be built using the *tensor product* of the univariate polynomial
+bases which are orthonormal with respect to
+the marginals of :math:`\mu_{\vect{Z}}`. Introducing the multi-index
+:math:`\vect{\alpha} = (\alpha_1, \dots, \alpha_d)` representing the marginal polynomial degrees,
+we built the basis of orthonormal polynomials with respect to :math:`\mu_{\vect{Z}}`
 as follows:
 
   .. math::
@@ -90,7 +93,8 @@ Then, the meta model of *h* is the solution of:
 
 where :math:`\{a_k \in \Rset\}_{k\in I_n}` are real coefficients.
 
-Several strategies are possible to compute the coefficients :math:`(a_k)_k` (see :ref:`response_surface` to get more details on the computation of the coefficents):
+Several strategies are possible to compute the coefficients :math:`(a_k)_k` (see :ref:`response_surface`
+to get more details on the computation of the coefficents):
 
 - The orthonormality property of the polynomial basis makes it easy to calculate the coefficients which
 are defined by scalar products (see :class:`~openturns.IntegrationExpansion`):
@@ -101,7 +105,8 @@ are defined by scalar products (see :class:`~openturns.IntegrationExpansion`):
       a_k = \langle g,  \psi_k \rangle = \Expect{g(\vect{Z}) \psi_k(\vect{Z})}
 
 
-- The coefficients are solution of the discretized least square problem :eq:`PC` (see :class:`~openturns.LeastSquaresExpansion`).
+- The coefficients are solution of the discretized least square problem :eq:`PC` (see
+:class:`~openturns.LeastSquaresExpansion`).
 
 .. topic:: API:
 
@@ -123,4 +128,5 @@ are defined by scalar products (see :class:`~openturns.IntegrationExpansion`):
     - [soizeghanem2004]_
     - [ghanem1991]_
     - [lemaitre2010]_
-    - R. Ghanem and P. Spanos, 1991, "Stochastic finite elements -- A spectral approach", Springer Verlag. (Reedited by Dover Publications, 2003).
+    - R. Ghanem and P. Spanos, 1991, "Stochastic finite elements -- A spectral approach", Springer Verlag.
+      (Reedited by Dover Publications, 2003).

@@ -285,7 +285,7 @@ Some chaos expansions for dependent variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When the components of the input random vector :math:`\vect{X}` are not independent, we can use an
-iso-probabilistic transformation to map :math:`\vect{X}` into :math:`\vect{Z}` with independent components. 
+iso-probabilistic transformation to map :math:`\vect{X}` into :math:`\vect{Z}` with independent components.
 
 It is also possible to build up a multivariate orthonormal basis with respect to the
 :math:`\mu_{\vect{X}}`  if it is uniquely defined by all its moments, as follows:
