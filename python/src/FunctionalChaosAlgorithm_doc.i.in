@@ -330,8 +330,7 @@ sparse PCE.
 ...     ot.LARS(), \
 ...     ot.CorrectedLeaveOneOut()
 ... )
->>> projectionStrategy = ot.LeastSquaresStrategy(inputSample, outputSample, \
-...                                              selection)
+>>> projectionStrategy = ot.LeastSquaresStrategy(inputSample, outputSample, selection)
 >>> algo = ot.FunctionalChaosAlgorithm(inputSample, outputSample, distribution, \
 ...                                    adaptiveStrategy, projectionStrategy)"
 

@@ -165,7 +165,7 @@ Notice that such a basis is no longer made of polynomials. When
 dealing with independent random variables, each basis element may be recast as in
 :eq:`3.010six`.
 Computing :math:`\psi_{\idx}(\vect{z})` can be expensive.
-This is the reason why we present below other methods for specific types
+This is the reason why we now present other methods for specific types
 of input random vectors.
 
 If :math:`\vect{X}` has an elliptical copula instead of an independent
@@ -182,13 +182,13 @@ Link with classical deterministic polynomial approximation
 In a deterministic setting (i.e. when the input parameters are
 considered to be deterministic), it is of common practice to substitute
 the model function :math:`h` by a polynomial approximation over its
-whole domain of definition as shown in . Actually this approach is
+whole domain of definition. Actually this approach is
 strictly equivalent to:
 
-- Regarding the input parameters as random uniform random variables
+#. Regarding the input parameters as random uniform random variables
 
-- Expanding any quantity of interest provided by the model onto a PC
-  expansion made of Legendre polynomials
+#. Expanding any quantity of interest provided by the model onto a PC
+   expansion made of Legendre polynomials
 
 
 .. topic:: API:
