@@ -139,7 +139,8 @@ Building a functional chaos expansion of :math:`h` consists in making the follow
 
   For example, we can choose the canonical basis or the family of orthonormal polynomials with respect to :math:`\mu_{\vect{Z}}`.
 
-Thus, the basis :math:`(\Psi_k)_{k \geq 0}` forms a complete orthonormal system (see [sullivan2015]_ : page 139, [dahlquist2008]_ : theorem 4.5.16 page 456 and [rudin1987]_: section 4.24 page 85).
+Thus, the basis :math:`(\Psi_k)_{k \geq 0}` forms a complete orthonormal system (see [sullivan2015]_ : page 139, [dahlquist2008]_ :
+theorem 4.5.16 page 456 and [rudin1987]_: section 4.24 page 85).
 Then, the meta model of *h* is the solution of:
 
   .. math::
@@ -155,7 +156,8 @@ The choice of the projection space :math:`\cP_n` and its basis :math:`(\Psi_k)_{
 designed to ensure that the discretized problem :eq:`metaModeleh` is easy to solve (well-conditioned
 discrete problem).
 In particular, the choice of basis has a major influence on the
-conditioning of the least-squares problem :eq:`metaModeleh` (for example, using an orthonormal basis makes well-condtioned the discretized problem).
+conditioning of the least-squares problem :eq:`metaModeleh` (for example, using an orthonormal basis makes well-condtioned the
+discretized problem).
 
 Thus :math:`\widetilde{h}` is represented by a *finite* subset of coefficients :math:`(a_k)_{k\in I_n}` in a *truncated* basis :math:`(\Psi_k)_{k\in I_n}`:
 
@@ -255,7 +257,10 @@ respect to its margins :math:`\mu_i` (see  :ref:`Polynomial chaos basis <chaos_b
 :class:`~openturns.OrthogonalUniVariatePolynomialFamily` and
 :class:`~openturns.OrthogonalUniVariatePolynomialFactory`).
 
-Note that if the distribution :math:`\mu_{\vect{Z}}` is not uniquely defined by all its moments, the orthonormal polynomial basis :math:`(\Psi_k)_{k\geq 0}` does not form a complete orthonormal system and :eq:`fermeturePn` is not ensured. It means that the model :math:`h` can not be decomposed in the basis as written in :eq:`fctExph`. Nevertheless, even without any guarantee, it is possible that the meta model built using the basis :math:`(\Psi_k)_{k \in I_n}` may be a good approximation of :math:`h`.
+Note that if the distribution :math:`\mu_{\vect{Z}}` is not uniquely defined by all its moments, the orthonormal polynomial
+basis :math:`(\Psi_k)_{k\geq 0}` does not form a complete orthonormal system and :eq:`fermeturePn` is not ensured. It means that
+the model :math:`h` can not be decomposed in the basis as written in :eq:`fctExph`. Nevertheless, even without any guarantee, it
+is possible that the meta model built using the basis :math:`(\Psi_k)_{k \in I_n}` may be a good approximation of :math:`h`.
 
 Other chaos expansions for independent variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
