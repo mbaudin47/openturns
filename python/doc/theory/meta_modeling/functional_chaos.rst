@@ -17,7 +17,7 @@ computational cost, in order to obtain accurate results.
 A possible solution to overcome this problem is to project the model
 :math:`g` in a suitable functional space, such as
 the Hilbert space :math:`L^2(\mu_{\vect{X}})` of square-integrable functions with
-respect to the PDF :math:`\mu_{\vect{X}}`.
+respect to :math:`\mu_{\vect{X}}`.
 More precisely, we may consider an expansion of the model onto an orthonormal basis of :math:`L^2(\mu_{\vect{X}})`.
 As an example of this type of expansion, one can mention expansions by
 wavelets, polynomials, etc.
@@ -39,7 +39,7 @@ where :math:`g: \Rset^{n_X} \rightarrow \Rset^{n_Y}` is the model,
 :math:`n_X \in \Nset` is the input dimension,
 :math:`n_Y \in \Nset` is the output dimension.
 We assume that :math:`\vect{Y}` has finite variance i.e.
-:math:`g\in :math:`L^2(\mu_{\vect{X}})`.
+:math:`g\in L^2(\mu_{\vect{X}})`.
 
 When :math:`n_Y > 1`, the functional chaos algorithm is used on each marginal
 of :math:`\vect{Y}`, using the same multivariate orthonormal basis for
@@ -50,8 +50,8 @@ Thus, the method is detailed here for a scalar output :math:`Y` and
 Iso-probabilistic transformation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Let :math:`T: \Rset^{n_X} \rightarrow \Rset^{n_X}` be an isoprobabilistic transformation
-such that :math:`\vect{Z} = T(\vect{X})` follows the measure :math:`\mu_{\vect{Z}}`.
+Let :math:`T: \Rset^{n_X} \rightarrow \Rset^{n_X}` be an iso-probabilistic transformation
+(see :ref:`isoprobabilistic_transformation`) such that :math:`\vect{Z} = T(\vect{X})` follows the measure :math:`\mu_{\vect{Z}}`.
 Let :math:`h` be the function defined by the equation:
 
 .. math::
@@ -92,15 +92,7 @@ verifies the following properties:
 .. math::
    :label: orthonorm
 
-    \langle \Psi_i, \Psi_{j}\rangle  = \int \Psi_i\vect{z} \Psi_{j}\vect{z}d\vect{z} = \delta_{i,j}
-
-
-or:
-
-.. math::
-   :label: orthonormDisc
-
-    \langle \Psi_i, \Psi_{j}\rangle  = \sum_\vect{z} = \delta_{i,j}
+    \langle \Psi_i, \Psi_{j}\rangle  =  \delta_{i,j}
 
 
 where :math:`\delta_{i,j} =1` is the Kronecker symbol:
@@ -114,7 +106,8 @@ where :math:`\delta_{i,j} =1` is the Kronecker symbol:
   0 & \textrm{otherwise.}
   \end{cases}
 
-See :ref:`orthogonal basis <orthogonal_basis>` to know the available orthonormal basis.
+See :ref:`orthogonal basis <orthogonal_basis>` to know the available orthonormal
+basis in OpenTURNS.
 
 Functional chaos expansion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,7 +139,7 @@ Building a functional chaos expansion of :math:`h` consists in making the follow
 
   For example, we can choose the canonical basis or the family of orthonormal polynomials with respect to :math:`\mu_{\vect{Z}}`.
 
-
+Thus, the basis :math:`(\Psi_k)_{k \geq 0}` forms a complete orthonormal system (see [sullivan2015]_ : page 139, [dahlquist2008]_ : theorem 4.5.16 page 456 and [rudin1987]_: section 4.24 page 85).
 Then, the meta model of *h* is the solution of:
 
   .. math::
@@ -162,7 +155,7 @@ The choice of the projection space :math:`\cP_n` and its basis :math:`(\Psi_k)_{
 designed to ensure that the discretized problem :eq:`metaModeleh` is easy to solve (well-conditioned
 discrete problem).
 In particular, the choice of basis has a major influence on the
-conditioning of the least-squares problem :eq:`metaModeleh`.
+conditioning of the least-squares problem :eq:`metaModeleh` (for example, using an orthonormal basis makes well-condtioned the discretized problem).
 
 Thus :math:`\widetilde{h}` is represented by a *finite* subset of coefficients :math:`(a_k)_{k\in I_n}` in a *truncated* basis :math:`(\Psi_k)_{k\in I_n}`:
 
@@ -195,10 +188,9 @@ by orthogonality of the base, relation :eq:`defPsi0` implies in particular that:
 
        \Expect{\psi_{i}(\vect{Z})} = \Expect{\Psi_{i}(\vect{Z})\Psi_{0}(\vect{Z})}= 0\quad \forall i\neq 0
 
-The use of a basis orthonormal with respect to the measure :math:`\mu_{\vect{Z}}` facilitates the
-computation of the :math:`a_k` coefficients, transforming the least-squares problem into a scalar product
-calculation. In this case, the least-squares problem is equivalent to the computation of scalar products.
-The algorithmic cost of solving the problem is much lower.
+The use of a basis orthonormal with respect to the measure :math:`\mu_{\vect{Z}}`
+transforms the least-squares problem into a scalar product
+calculation: the :math:`a_k` coefficients can be computed by evaluating integrals.
 
 
 The meta model :math:`\widetilde{h}` can be used to build an efficient
@@ -224,7 +216,7 @@ Then, the meta model of *g* can be defined using the isoprobabilistic transforma
 
     \widetilde{g} = \widetilde{h} \circ T
 
-see  :ref:`response_surface` to get more details on:
+See  :ref:`response_surface` to get more details on:
 
 - the available constructions of the truncated multivariate orthogonal basis,
 
@@ -257,16 +249,13 @@ by all its moments. So, we poceed as follows:
 
 is a random vector distributed according to the measure :math:`\mu_{\vect{Z}}` which is uniquely defined
 by all its moments.
-We also recommend to define :math:`\mu_{\vect{Z}}` with independent components in order to facilitate
+We also make the choice that :math:`\mu_{\vect{Z}}` has independent components in order to facilitate
 the creation of the orthonormal basis as the tensorization of univariate polynomial basis orthonormal with
 respect to its margins :math:`\mu_i` (see  :ref:`Polynomial chaos basis <chaos_basis>` and the classes
 :class:`~openturns.OrthogonalUniVariatePolynomialFamily` and
-:class:`~openturns.OrthogonalUniVariatePolynomialFactory`):
+:class:`~openturns.OrthogonalUniVariatePolynomialFactory`).
 
-  .. math::
-
-     \mu_{\vect{Z}}(\vect{z})= \prod_{i=1}^{n_X} \mu_i(z_i)
-
+Note that if the distribution :math:`\mu_{\vect{Z}}` is not uniquely defined by all its moments, the orthonormal polynomial basis :math:`(\Psi_k)_{k\geq 0}` does not form a complete orthonormal system and :eq:`fermeturePn` is not ensured. It means that the model :math:`h` can not be decomposed in the basis as written in :eq:`fctExph`. Nevertheless, even without any guarantee, it is possible that the meta model built using the basis :math:`(\Psi_k)_{k \in I_n}` may be a good approximation of :math:`h`.
 
 Other chaos expansions for independent variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -287,7 +276,7 @@ Some chaos expansions for dependent variables
 When the components of the input random vector :math:`\vect{X}` are not independent, we can use an
 iso-probabilistic transformation to map :math:`\vect{X}` into :math:`\vect{Z}` with independent components.
 
-It is also possible to build up a multivariate orthonormal basis with respect to the
+It is also possible to build up a multivariate orthonormal basis with respect to
 :math:`\mu_{\vect{X}}`  if it is uniquely defined by all its moments, as follows:
 
   .. math::
@@ -302,20 +291,27 @@ respect to :math:`\mu_i`  as follows:
 
   .. math::
 
-        \Psi_\vect{\alpha}(\vect{z}) = \prod_{i=1}^d \Psi_{\alpha_i}(z_i).
+        \Psi_\vect{\alpha}(\vect{x}) = \prod_{i=1}^d \Psi_{\alpha_i}(x_i).
 
 
 OpenTURNS enables one to use the following kernel:
 
   .. math::
+    :label: soizeghanem
 
-     K(\vect{x}) = \dfrac{1}{\sqrt{c(\vect{x}}}
+     K(\vect{x}) = \dfrac{1}{\sqrt{c(\vect{x})}}
 
 
 where :math:`c` is the density of the copula of :math:`\vect{X}`. Then the orthonormal basis is
 called the `Soize-Ghanem` basis (see
-:class:`~openturns.SoizeGhanemFactory`).
+:class:`~openturns.SoizeGhanemFactory`). Relation :eq:`soizeghanem` can be written as:
 
+  .. math::
+    :label: soizeghanem
+
+     K(\vect{x}) = \dfrac{\mu_1(x_1) \dots \mu_{n_X}(x_{n_X})}{\mu_{\vect{X}}(\vect{x})}
+
+where :math:`\mu_i` is the :math:`i` -th marginal of :math:`\mu_{\vect{X}}`.
 
 Link with classical deterministic polynomial approximation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -350,7 +346,9 @@ strictly equivalent to:
 .. topic:: References:
 
     - [lemaitre2010]_
-    - [sullivan2015]_, chapter 11 section 11.3 page 237
+    - [sullivan2015]_
     - [xiu2010]_
     - [soizeghanem2004]_
-
+    - [dahlquist2008]_
+    - [rudin1987]_
+    - [ghanem1991]_

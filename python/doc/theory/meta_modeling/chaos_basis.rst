@@ -29,6 +29,9 @@ Let us assume that:
 -  :math:`\vect{Z}` has independent components.
 
 
+Note that if the distribution :math:`\mu_{\vect{Z}}` is not uniquely defined by all its moments, the convergence of the polynomial chaos expansion is not ensured.  Nevertheless,
+it is possible that the meta model built using the basis :math:`(\Psi_k)_{k \in I_n}` may be a good approximation of :math:`h`.
+
 Polynomial chaos expansion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -45,7 +48,8 @@ which makes the following choices:
   :math:`\cP_n` by completing it.
 
 
-To ensure :eq:`fermeturePn`, the measure :math:`\mu_{\vect{Z}}` needs to be uniquely defined by all its moments.
+To ensure :eq:`fermeturePn`, ie to ensure that the basis :math:`(\Psi_k)_{k \geq 0}` forms a complete orthonormal system (see [sullivan2015]_ page 139, [dahlquist2008]_: theorem 4.5.16 page 456 and [rudin1987]_: section
+4.24 page 85), the measure :math:`\mu_{\vect{Z}}` needs to be uniquely defined by all its moments.
 
 As :math:`\vect{Z}` has independent components, we have:
 
@@ -66,16 +70,8 @@ as follows:
         \Psi_\vect{\alpha}(\vect{z}) = \prod_{i=1}^d \Psi_{\alpha_i}(z_i)
 
 
-The orthonormal polynomial basis with respect to the marginal :math:`\mu_i` is known for some distributions.
-This is the case for:
-
-- the measure :math:`\mu_i = \cU` whose orthonormal polynomial basis is the family of Legendre polynomials,
-
-- the measure :math:`\mu_i = \Gamma` whose orthonormal polynomial basis is the family of Laguerre polynomials,
-
-- the measure :math:`\mu_i = \beta` whose orthonormal polynomial basis is the family of Jacobi polynomials,
-
-- the measure :math:`\mu_i = \cN` whose orthonormal polynomial basis is the family of Hermitte polynomials.
+The orthonormal polynomial basis with respect to the marginal :math:`\mu_i` is known for some distributions: see :ref:`orthogonal_polynomial`
+to get some usual orthonornal polynomial families.
 
 If the family is not already known, the polynomials can be represented by their three-term
 recurrence, using the adaptive Stieljes algorithm (see :class:`~openturns.AdaptiveStieltjesAlgorithm`).
@@ -105,8 +101,7 @@ are defined by scalar products (see :class:`~openturns.IntegrationExpansion`):
       a_k = \langle g,  \psi_k \rangle = \Expect{g(\vect{Z}) \psi_k(\vect{Z})}
 
 
-- The coefficients are solution of the discretized least square problem :eq:`PC` (see
-:class:`~openturns.LeastSquaresExpansion`).
+- The coefficients are solution of the discretized least square problem :eq:`PC` (see :class:`~openturns.LeastSquaresExpansion`).
 
 .. topic:: API:
 
@@ -128,5 +123,5 @@ are defined by scalar products (see :class:`~openturns.IntegrationExpansion`):
     - [soizeghanem2004]_
     - [ghanem1991]_
     - [lemaitre2010]_
-    - R. Ghanem and P. Spanos, 1991, "Stochastic finite elements -- A spectral approach", Springer Verlag.
-      (Reedited by Dover Publications, 2003).
+    - [dahlquist2008]_
+    - [dudin1987]_

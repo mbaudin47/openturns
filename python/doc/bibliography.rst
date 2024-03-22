@@ -69,6 +69,8 @@ Bibliography
     Springer, 2001.
 .. [dagostino1986] D'Agostino, R.B. and Stephens, M.A. *Goodness-of-Fit Techniques*,
     Marcel Dekker, Inc., New York, 1986.
+.. [dahlquist2008] Dahlquist, G. and Björck, A. *Numerical methods in scientific computing*,
+   volume I. Society for Industrial and Applied Mathematics. 2008
 .. [damblin2013] G. Damblin, M. Couplet and B. Iooss. *Numerical studies
     of space filling designs: optimization of Latin hypercube samples and
     subprojection properties.* Journal of Simulation, 7:276-289, 2013.
@@ -120,7 +122,7 @@ Bibliography
 .. [genz2003] Genz A., Cools R., *An adaptive numerical cubature algorithm for simplices*,
     ACM Transactions on Mathematical Software 29(3):297-308, September 2003
     `pdf <https://www.researchgate.net/publication/220492882_An_adaptive_numerical_cubature_algorithm_for_simplices>`__
-.. [ghanem1991] Ghanem and P. Spanos, 1991,
+.. [ghanem1991] Ghanem R. and P. Spanos, 1991,
     *Stochastic finite elements – A spectral approach*,
     Springer Verlag. (Reedited by Dover Publications, 2003).
 .. [gerstner1998] Gerstner, T., & Griebel, M. (1998). *Numerical integration using
@@ -348,6 +350,7 @@ Bibliography
     Z. Wahrseheinlichkeitstheorie, volume 2, pages 340-368.
 .. [rubinstein2017] Rubinstein, R. Y., & Kroese, D. P. (2017). *Simulation and the Monte Carlo method.* John Wiley & Sons.
    `pdf <https://kgut.ac.ir/useruploads/1509987964985oqk.pdf>`__
+.. [rudin1987] Rudin, W. *Real and complex analysis* 1987.
 .. [saltelli1999] Saltelli, A., Tarantola, S. and Chan, K. *A quantitative, model
     independent method for global sensitivity analysis of model output.*
     Technometrics, 1999, 41(1), 39-56.
