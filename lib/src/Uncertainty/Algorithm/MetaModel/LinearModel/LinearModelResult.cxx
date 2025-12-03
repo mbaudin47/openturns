@@ -51,10 +51,12 @@ LinearModelResult::LinearModelResult(const Sample & inputSample,
                                      const Point & diagonalGramInverse,
                                      const Point & leverages,
                                      const Point & cookDistances,
-                                     const Scalar residualsVariance)
+                                     const Scalar residualsVariance,
+                                     const LeastSquaresMethod & leastSquaresMethod)
   : MetaModelResult(inputSample, outputSample, metaModel)
   , basis_(basis)
   , design_(design)
+  , leastSquaresMethod_(leastSquaresMethod)
   , coefficients_(coefficients)
   , condensedFormula_(formula)
   , coefficientsNames_(coefficientsNames)
@@ -76,6 +78,54 @@ LinearModelResult::LinearModelResult(const Sample & inputSample,
                                          << ", basis size = " << coefficients_.getSize()
                                          << ", degrees of freedom = " << degreesOfFreedom;
   checkIntercept();
+}
+
+/* Default constructor of LeastSquaresMethod */
+LeastSquaresMethod LinearModelResult::BuildDefaultLeastSquaresMethod(const Sample & inputSample, const Basis & basis)
+{
+    const UnsignedInteger basisSize = basis.getSize();
+    DesignProxy designProxy(inputSample, basis);
+    Indices allIndices(basisSize);
+    allIndices.fill();
+    const String methodName(ResourceMap::GetAsString("LinearModelResult-DecompositionMethod"));
+
+    LeastSquaresMethod method = LeastSquaresMethod::Build(methodName, designProxy, allIndices);
+    method.update(Indices(0), allIndices, Indices(0));
+    return method;
+}
+
+/* Parameter constructor */
+LinearModelResult::LinearModelResult(const Sample & inputSample,
+                                     const Basis & basis,
+                                     const Matrix & design,
+                                     const Sample & outputSample,
+                                     const Function & metaModel,
+                                     const Point & coefficients,
+                                     const String & formula,
+                                     const Description & coefficientsNames,
+                                     const Sample & sampleResiduals,
+                                     const Sample & standardizedResiduals,
+                                     const Point & diagonalGramInverse,
+                                     const Point & leverages,
+                                     const Point & cookDistances,
+                                     const Scalar residualsVariance)
+  : LinearModelResult(inputSample
+    , basis
+    , design
+    , outputSample
+    , metaModel
+    , coefficients
+    , formula
+    , coefficientsNames
+    , sampleResiduals
+    , standardizedResiduals
+    , diagonalGramInverse
+    , leverages
+    , cookDistances
+    , residualsVariance
+    , BuildDefaultLeastSquaresMethod(inputSample, basis))
+{
+  // Nothing to do
 }
 
 /* Virtual constructor */
@@ -163,6 +213,11 @@ String LinearModelResult::__repr__() const
          << " residuals variance= " << residualsVariance_
          << " hasIntercept=" << hasIntercept_
          << " involvesModelSelection=" << involvesModelSelection_;
+}
+
+LeastSquaresMethod LinearModelResult::getLeastSquaresMethod() const
+{
+  return leastSquaresMethod_;
 }
 
 Basis LinearModelResult::getBasis() const
