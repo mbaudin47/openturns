@@ -252,7 +252,7 @@ linear least squares.
 >>> known_gamma = 0.0
 >>> estimated_distribution_fixed = factory.buildMethodOfLeastSquares(sample, known_gamma)
 >>> print(estimated_distribution_fixed.getParameter())
-[2.53295,1.03844,0]
+[2.53...,1.03...,0]
 
 Example 2: When gamma is unknown.
 In this case, we perform a full estimation by non-linear least squares (for gamma)
@@ -260,7 +260,7 @@ combined with linear least squares (for alpha and beta).
 
 >>> estimated_distribution_full = factory.buildMethodOfLeastSquares(sample)
 >>> print(estimated_distribution_full.getParameter())
-[2.61194,1.05002,-0.101449]
+[2.61...,1.05...,-0.10...]
 "
 
 // ----------------------------------------------------------------------------
