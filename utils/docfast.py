@@ -267,7 +267,7 @@ os.rename(
 
 # build.build_main(['-j', 'auto', build_folder, os.path.join(build_folder, 'install')]) # does not work when git diff is used (because it shares a Python session?)
 subprocess.run(
-    ["sphinx-build", "-j", "auto", build_folder, os.path.join(build_folder, "install")]
+    ["sphinx-build", "-j", "1", build_folder, os.path.join(build_folder, "install")]
 )
 
 # Restore all python files in openturns install directory
