@@ -11,7 +11,7 @@ Notes
 This class implements the generic maximum likelihood estimation
 which is detailed in :ref:`maximum_likelihood`.
 
-Let us denote :math:`(\vect{x}_1, \dots, \vect{x}_n)` the sample, :math:`p_{\vect{\theta}}`
+Let us denote :math:`(\vect{x}_1, \dots, \vect{x}_{\sampleSize})` the iid sample, :math:`p_{\vect{\theta}}`
 the density of the parametric distribution we want to fit to the sample, with the
 parameter vector :math:`\vect{\theta} \in \Theta \in \Rset^p` .
 
@@ -20,19 +20,29 @@ The likelihood of the sample according to :math:`p_{\vect{\theta}}` is:
 
 .. math::
 
-    L(\vect{x}_1, \dots, \vect{x}_n; \vect{\theta}) = \prod_{i=1}^n p_{\vect{\theta}}(\vect{x}_i)
+    L(\vect{x}_1, \dots, \vect{x}_{\sampleSize}; \vect{\theta})
+    = \prod_{i=1}^{\sampleSize} p_{\vect{\theta}}(\vect{x}_i).
     
 The log-likelihood is defined as:
 
 .. math::
 
-    \ell(\vect{x}_1, \dots, \vect{x}_n; \vect{\theta}) = \sum_{i=1}^n \log p_{\vect{\theta}}(\vect{x}_i)
+    \ell(\vect{x}_1, \dots, \vect{x}_{\sampleSize}; \vect{\theta})
+    = \log\left(L(\vect{x}_1, \dots, \vect{x}_{\sampleSize}; \vect{\theta})\right).
 
-The estimator of  :math:`\vect{\theta}` maximizes the log-likelihood:
+Therefore:
 
 .. math::
 
-    \hat{\vect{\theta}} = \argmax_{\vect{\theta} \in \Theta} \log \ell (\vect{x}_1, \dots, \vect{x}_n; \vect{\theta}) 
+    \ell(\vect{x}_1, \dots, \vect{x}_{\sampleSize}; \vect{\theta})
+    = \sum_{i=1}^{\sampleSize} \log p_{\vect{\theta}}(\vect{x}_i).
+
+The estimator of :math:`\vect{\theta}` maximizes the log-likelihood:
+
+.. math::
+
+    \widehat{\vect{\theta}}
+    = \argmax_{\vect{\theta} \in \Theta} \ell (\vect{x}_1, \dots, \vect{x}_{\sampleSize}; \vect{\theta}).
 
 See also
 --------
