@@ -27,13 +27,14 @@ The parameter :math:`\widehat{\alpha}` is solution of the equation:
     \widehat{\text{skew}} 
     & =  \dfrac{ 2(1 + \widehat{\alpha}) }{ \widehat{\alpha} - 3 } \sqrt{ \dfrac{ \widehat{\alpha} - 2 }{ \widehat{\alpha} } }.
 
+This nonlinear equation is solved using a numerical method.
 If :math:`\widehat{\alpha} \leq 3`, then an exception is raised.
 If :math:`\widehat{\alpha} > 3`, then we compute :math:`(\widehat{\beta}, \widehat{\gamma})` as follows: 
 
 .. math::
 
     \widehat{\beta} 
-    & = (\widehat{\alpha} - 1) \sqrt{\dfrac{\widehat{\alpha} - 2}{\widehat{\alpha}}} s \\
+    & = (\widehat{\alpha} - 1) \sqrt{\dfrac{\widehat{\alpha} - 2}{\widehat{\alpha}}} s, \\
     \widehat{\gamma}
     & = \overline{x} - \dfrac{\widehat{\alpha}}{\widehat{\alpha}+1} \widehat{\beta}.
 
@@ -106,8 +107,8 @@ For a given value of :math:`\gamma`, the log-likelihood of the sample is defined
 
 .. math::
 
-    \ell(\alpha(\gamma), \beta(\gamma) \mid  x_1, \dots, x_{\sampleSize}, \gamma)
-    = \sampleSize \log(\alpha(\gamma)) + \sampleSize \alpha(\gamma) \log(\beta(\gamma))
+    & \ell(\alpha(\gamma), \beta(\gamma) \mid  x_1, \dots, x_{\sampleSize}, \gamma) \\
+    & = \sampleSize \log(\alpha(\gamma)) + \sampleSize \alpha(\gamma) \log(\beta(\gamma))
       - (\alpha(\gamma) + 1) \sum_{i=1}^\sampleSize \log(x_i - \gamma)
 
 We compute :math:`\left(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma)\right)` which
@@ -125,7 +126,7 @@ where :math:`x_{(1,\sampleSize)}` is the smallest observation in the sample:
 
 .. math::
 
-    x_{(1,\sampleSize)} = \min_{i=1}^\sampleSize x_i.
+    x_{(1,\sampleSize)} = \min_{1 \leq i \leq \sampleSize} x_i.
 
 We get:
 
