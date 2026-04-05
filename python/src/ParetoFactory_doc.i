@@ -46,28 +46,37 @@ The log-likelihood of the sample is defined by:
 
 .. math::
 
-    \ell(\alpha, \beta, \gamma \mid  x_1, \dots, x_{\sampleSize}) = \sampleSize \log \alpha + \sampleSize \alpha \log \beta - (\alpha+1) \sum_{i=1}^\sampleSize \log(x_i-\gamma)
+    \ell(\alpha, \beta, \gamma \mid  x_1, \dots, x_{\sampleSize})
+    = \sampleSize \log \alpha + \sampleSize \alpha \log \beta
+      - (\alpha+1) \sum_{i=1}^\sampleSize \log(x_i-\gamma)
 
 
-The maximum likelihood based estimator :math:`\left(\widehat{\beta}, \widehat{\alpha}, \widehat{\gamma}\right)` of :math:`\left(\beta, \alpha, \gamma\right)` maximizes the likelihood:
+The maximum likelihood based estimator
+:math:`\left(\widehat{\beta}, \widehat{\alpha}, \widehat{\gamma}\right)`
+of :math:`\left(\beta, \alpha, \gamma\right)` maximizes the likelihood:
 
 .. math::
 
-    \left(\widehat{\beta}, \widehat{\alpha}, \widehat{\gamma}\right) = \argmax_{\alpha, \beta, \gamma} \ell(\alpha, \beta, \gamma \mid  x_1, \dots, x_{\sampleSize})
+    \left(\widehat{\beta}, \widehat{\alpha}, \widehat{\gamma}\right)
+    = \argmax_{\alpha, \beta, \gamma} \ell(\alpha, \beta, \gamma \mid  x_1, \dots, x_{\sampleSize})
 
 The following strategy is to be implemented soon: 
 For a given :math:`\gamma`, the log-likelihood of the sample is defined by:
 
 .. math::
 
-    \ell(\alpha(\gamma), \beta(\gamma) \mid  x_1, \dots, x_{\sampleSize}, \gamma) = \sampleSize \log(\alpha(\gamma)) + \sampleSize \alpha(\gamma) \log(\beta(\gamma)) - (\alpha(\gamma) + 1) \sum_{i=1}^n \log(x_i - \gamma)
+    \ell(\alpha(\gamma), \beta(\gamma) \mid  x_1, \dots, x_{\sampleSize}, \gamma)
+    = \sampleSize \log(\alpha(\gamma)) + \sampleSize \alpha(\gamma) \log(\beta(\gamma))
+      - (\alpha(\gamma) + 1) \sum_{i=1}^\sampleSize \log(x_i - \gamma)
 
-We get :math:`(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma))` which maximizes :math:`\ell(\alpha, \beta \mid  x_1, \dots, x_{\sampleSize}, \gamma)` :
+We get :math:`(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma))` which
+maximizes :math:`\ell(\alpha, \beta \mid  x_1, \dots, x_{\sampleSize}, \gamma)` :
 
 .. math::
 
     \begin{aligned}
-    \left(\widehat{\beta}(\gamma), \widehat{\alpha}(\gamma)\right) = & \operatorname*{argmax}_{\alpha, \beta} & & \ell(\alpha(\gamma), \beta(\gamma) \mid x_1, \dots, x_{n}, \gamma) \\
+    \left(\widehat{\beta}(\gamma), \widehat{\alpha}(\gamma)\right)
+    & = \operatorname*{argmax}_{\alpha, \beta} & & \ell(\alpha(\gamma), \beta(\gamma) \mid x_1, \dots, x_{\sampleSize}, \gamma) \\
 	& \text{s.t.} & & \gamma + \widehat{\beta}(\gamma) \leq x_{(1,\sampleSize)} 
     \end{aligned}
 
@@ -79,20 +88,28 @@ We get:
 
     \begin{eqnarray*}
         \widehat{\beta}( \gamma) & = & x_{(1,\sampleSize)} - \gamma \\
-        \widehat{\alpha}( \gamma) & = & \dfrac{\sampleSize}{\sum_{i=1}^\sampleSize \log\left( \dfrac{x_i - \gamma}{\widehat{\beta}( \gamma)}\right)}
+        \widehat{\alpha}( \gamma) & = & \dfrac{\sampleSize}{\sum_{i=1}^\sampleSize
+            \log\left( \dfrac{x_i - \gamma}{\widehat{\beta}( \gamma)}\right)}
     \end{eqnarray*}
 
 
-Then the parameter :math:`\gamma` is obtained by maximizing the log-likelihood :math:`\ell(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma), \gamma)`:
+Then the parameter :math:`\gamma` is obtained by maximizing the log-likelihood
+of the sample :math:`\ell(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma), \gamma)`:
 
 .. math::
 
-    \widehat{\gamma} = \argmax_{\gamma}  \ell(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma), \gamma)
+    \widehat{\gamma}
+    = \argmax_{\gamma}  \ell(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma), \gamma)
 
-The starting point of the optimization algorithm is :math:`\gamma_0 = x_{(1,\sampleSize)} - |x_{(1,\sampleSize)}|/(2 + \sampleSize)`.
+The starting point of the optimization algorithm is:
+
+.. math::
+
+    \gamma_0 = x_{(1,\sampleSize)} - |x_{(1,\sampleSize)}|/(2 + \sampleSize).
 
 **Least squares estimator:**
 
+Let :math:`\widehat{S}` be the empirical survival function.
 If :math:`\gamma` is known, then we solve the linear least-squares problem:
 
 .. math::
@@ -115,14 +132,14 @@ More precisely, the parameter :math:`\gamma` is the solution of:
 .. math::
 
     \widehat{\gamma} 
-    = \argmin_{\gamma} \norm{\widehat{S}(x_i) - (a_1(\gamma} \log(x_i - \gamma) + a_0(\gamma})}_2^2
+    = \argmin_{\gamma} \norm{\widehat{S}(x_i) - (a_1(\gamma) \log(x_i - \gamma) + a_0(\gamma))}_2^2
 
 where :math:`a_0, a_1` are computed from linear least-squares at each optimization evaluation.
 
-In other words, when :math:`\gamma` is unkonwn, then two problems
+In other words, when :math:`\gamma` is unknown, then two problems
 are involved:
 
-- in the outer loop, an non linear least squares problem is solved
+- in the outer loop, a non-linear least squares problem is solved
   to estimate :math:`\gamma`;
 - in the inner loop, for a given given value of :math:`\gamma`,
   a linear least squares problem is solved
@@ -201,6 +218,14 @@ sample : 2-d sequence of float
     Data.
 gamma : float, optional
     Gamma parameter.
+    By default (e.g., if the gamma parameter is not specified by the user),
+    then the parameter is estimated using the non linear least squares
+    method.
+    Then the parameters alpha and beta are estimated using the linear least
+    squares method.
+    If the gamma parameter is specified by the user,
+    then the parameters alpha and beta are estimated using the linear least
+    squares method.
 
 Returns
 -------
@@ -213,7 +238,7 @@ Examples
 In the following example, the parameters of a :class:`~openturns.Pareto` 
 are estimated from a sample. 
 We create a simulated sample from a Pareto distribution with
-arameters alpha=2.5, beta=1.0 and gamma=0.0.
+parameters alpha=2.5, beta=1.0 and gamma=0.0.
 
 >>> import openturns as ot
 >>> real_distribution = ot.Pareto(2.5, 1.0, 0.0)
