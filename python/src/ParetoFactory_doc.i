@@ -131,8 +131,8 @@ We get:
 
 .. math::
 
-    \widehat{\beta}( \gamma) & = & x_{(1,\sampleSize)} - \gamma, \\
-    \widehat{\alpha}( \gamma) & = & \dfrac{\sampleSize}{\sum_{i=1}^\sampleSize
+    \widehat{\beta}( \gamma) & = x_{(1,\sampleSize)} - \gamma, \\
+    \widehat{\alpha}( \gamma) & = \dfrac{\sampleSize}{\sum_{i=1}^\sampleSize
         \log\left( \dfrac{x_i - \gamma}{\widehat{\beta}( \gamma)}\right)}.
 
 Then the parameter :math:`\gamma` is computed by maximizing the log-likelihood
