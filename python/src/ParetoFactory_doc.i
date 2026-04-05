@@ -11,32 +11,44 @@ from the Pareto random variable where :math:`\sampleSize` is the sample size.
 
 **Moments based estimator:**
 
-Let us denote:
+Let us define the sample statistics required for the estimation.
+The empirical mean :math:`\overline{x}` is calculated as:
 
-- :math:`\displaystyle \overline{x} = \frac{1}{\sampleSize} \sum_{i=1}^\sampleSize x_i` 
-  the empirical mean of the sample, 
-- :math:`\displaystyle s^2 = \frac{1}{\sampleSize - 1} \sum_{i=1}^\sampleSize (x_i - \overline{x})^2` its empirical variance,
-- :math:`\displaystyle \widehat{\text{skew}}_{\sampleSize}` the empirical skewness of the sample
+.. math::
+
+    \overline{x} = \frac{1}{\sampleSize} \sum_{i=1}^\sampleSize x_i
+
+The associated empirical variance :math:`s^2` is given by:
+
+.. math::
+
+    s^2 = \frac{1}{\sampleSize - 1} \sum_{i=1}^\sampleSize (x_i - \overline{x})^2
+
+Finally, the distribution of the sample is characterized by its empirical
+skewness, denoted as :math:`\widehat{\text{skew}}`.
 
 The estimator :math:`\left(\widehat{\beta}, \widehat{\alpha}, \widehat{\gamma}\right)` of
 :math:`(\beta, \alpha, \gamma)` is defined as follows.
-The parameter :math:`\widehat{\alpha}` is solution of the equation: 
+The parameter :math:`\widehat{\alpha}` is solution of the equation:
 
 .. math::
 
-    \widehat{\text{skew}} 
+    \begin{aligned}
+    & \widehat{\text{skew}} \\
     & =  \dfrac{ 2(1 + \widehat{\alpha}) }{ \widehat{\alpha} - 3 } \sqrt{ \dfrac{ \widehat{\alpha} - 2 }{ \widehat{\alpha} } }.
+    \end{aligned}
 
-This nonlinear equation is solved using a numerical method.
+The previous nonlinear equation is solved using a numerical method.
 If :math:`\widehat{\alpha} \leq 3`, then an exception is raised.
-If :math:`\widehat{\alpha} > 3`, then we compute :math:`(\widehat{\beta}, \widehat{\gamma})` as follows: 
+If :math:`\widehat{\alpha} > 3`, then we compute
+:math:`(\widehat{\beta}, \widehat{\gamma})` as follows:
 
 .. math::
 
-    \widehat{\beta} 
+    \widehat{\beta}
     & = (\widehat{\alpha} - 1) \sqrt{\dfrac{\widehat{\alpha} - 2}{\widehat{\alpha}}} s, \\
     \widehat{\gamma}
-    & = \overline{x} - \dfrac{\widehat{\alpha}}{\widehat{\alpha}+1} \widehat{\beta}.
+    & = \overline{x} - \dfrac{\widehat{\alpha} \widehat{\beta}}{\widehat{\alpha}+1}.
 
 **Least squares estimator:**
 
@@ -61,15 +73,16 @@ If :math:`\gamma` is known, then we solve the following linear least-squares pro
   :label: least_squares_estimator_pareto
 
     \left(\widehat{a}_0, \widehat{a}_1\right)
-    = \argmin_{a_0, a_1} \norm{\widehat{S}(x_i) - (a_1 \log(x_i - \gamma) + a_0)}_2^2.
+    = \argmin_{(a_0, a_1)^\top \in \Rset^2} \sum_{i = 1}^\sampleSize
+        \left(\widehat{S}(x_i) - (a_1 \log(x_i - \gamma) + a_0)\right)^2.
 
-Once the vector :math:`\left(\widehat{a}_0, \widehat{a}_1\right)` is computed, 
+Once the vector :math:`\left(\widehat{a}_0, \widehat{a}_1\right)` is computed,
 we compute :math:`\alpha` and :math:`\beta` from the equations:
 
 .. math::
 
-    \widehat{\beta} &= \exp \left( \frac{-a_0}{a_1} \right), \\
-    \widehat{\alpha} &= -a_1.
+    \widehat{\beta} &= \exp \left( \frac{-\widehat{a}_0}{\widehat{a}_1} \right), \\
+    \widehat{\alpha} &= -\widehat{a}_1.
 
 When :math:`\gamma` is unknown, it is estimated using non-linear
 least squares.
@@ -78,18 +91,20 @@ More precisely, the parameter :math:`\gamma` is the solution of:
 .. math::
 
     \widehat{\gamma} 
-    = \argmin_{\gamma} \norm{\widehat{S}(x_i) - (a_1(\gamma) \log(x_i - \gamma) + a_0(\gamma))}_2^2
+    = \argmin_{\gamma} \sum_{i = 1}^\sampleSize
+      \left(\widehat{S}(x_i) - (a_1(\gamma) \log(x_i - \gamma) + a_0(\gamma))\right)^2.
+
 
 where :math:`a_0, a_1` are computed from linear least-squares at each optimization evaluation.
 
-**Maximum likelihood based estimator** (not implemented yet)
+**Maximum likelihood based estimator:**
 
 The log-likelihood of the sample is:
 
 .. math::
 
     & \ell(\beta, \alpha, \gamma \mid  x_1, \dots, x_{\sampleSize}) \\
-    & = \sampleSize \log \alpha + \sampleSize \alpha \log \beta
+    & = \sampleSize \log(\alpha) + \sampleSize \alpha \log(\beta)
       - (\alpha + 1) \sum_{i = 1}^\sampleSize \log(x_i - \gamma)
 
 
@@ -102,8 +117,11 @@ of :math:`\left(\beta, \alpha, \gamma\right)` maximizes the log-likelihood:
     \left(\widehat{\beta}, \widehat{\alpha}, \widehat{\gamma}\right)
     = \argmax_{\beta, \alpha, \gamma} \ell(\beta, \alpha, \gamma \mid  x_1, \dots, x_{\sampleSize})
 
-The following strategy is to be implemented soon. 
-For a given value of :math:`\gamma`, the log-likelihood of the sample is defined by:
+In the current implementation, all parameters are estimated simultaneously.
+
+However, another method could be used, which can be described as follows.
+For a given value of :math:`\gamma`, the log-likelihood of the sample is
+defined by:
 
 .. math::
 
@@ -112,14 +130,14 @@ For a given value of :math:`\gamma`, the log-likelihood of the sample is defined
       - (\alpha(\gamma) + 1) \sum_{i=1}^\sampleSize \log(x_i - \gamma)
 
 We compute :math:`\left(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma)\right)` which
-maximizes :math:`\ell(\beta, \alpha, \mid  x_1, \dots, x_{\sampleSize}, \gamma)` :
+maximizes :math:`\ell(\beta, \alpha, \mid  x_1, \dots, x_{\sampleSize}, \gamma)`:
 
 .. math::
 
     \begin{aligned}
     \left(\widehat{\beta}(\gamma), \widehat{\alpha}(\gamma)\right)
-    & = \operatorname*{argmax}_{\beta, \alpha,} & & \ell(\alpha(\gamma), \beta(\gamma) \mid x_1, \dots, x_{\sampleSize}, \gamma) \\
-	& \quad \text{s.t.} & & \gamma + \widehat{\beta}(\gamma) \leq x_{(1,\sampleSize)} 
+    & = \argmax_{(\beta, \alpha)^\top \in \Rset^2} & & \ell(\alpha(\gamma), \beta(\gamma) \mid x_1, \dots, x_{\sampleSize}, \gamma) \\
+	& \quad \text{s.t.} & & \gamma + \widehat{\beta}(\gamma) \leq x_{(1,\sampleSize)}
     \end{aligned}
 
 where :math:`x_{(1,\sampleSize)}` is the smallest observation in the sample:
@@ -142,7 +160,7 @@ of the sample :math:`\ell\left(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamm
 .. math::
 
     \widehat{\gamma}
-    = \argmax_{\gamma} \ell\left(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma), \gamma\right)
+    = \argmax_{\gamma \in \Rset} \ell\left(\widehat{\beta}( \gamma), \widehat{\alpha}( \gamma), \gamma\right)
 
 The starting point of the optimization algorithm is:
 
@@ -192,7 +210,13 @@ sample : 2-d sequence of float
 Returns
 -------
 distribution : :class:`~openturns.Pareto`
-    The estimated distribution"
+    The estimated distribution
+
+Note
+----
+When this method is used, all parameters are estimated
+simultaneously.
+"
 
 // ----------------------------------------------------------------------------
 
@@ -220,15 +244,12 @@ Parameters
 sample : 2-d sequence of float
     Data.
 gamma : float, optional
-    Gamma parameter.
-    By default (e.g., if the gamma parameter is not specified by the user),
-    then the parameter is estimated using the non-linear least squares
-    method.
-    Then the parameters beta and alpha are estimated using the linear least
-    squares method.
-    If the gamma parameter is specified by the user,
-    then the parameters beta and alpha are estimated using the linear least
-    squares method.
+    Location parameter.
+    If provided, the estimation of $\alpha$ and $\beta$ is performed
+    via linear least squares with $\gamma$ fixed.
+    If not specified, $\gamma$ is first estimated using a
+    non-linear least squares routine, followed by a linear least
+    squares estimation for the remaining parameters.
 
 Returns
 -------
@@ -241,7 +262,7 @@ Examples
 In the following example, the parameters of a :class:`~openturns.Pareto` 
 are estimated from a sample. 
 We create a simulated sample from a Pareto distribution with
-parameters `beta=1.0`, `alpha=2.5` and `gamma=0.0`.
+parameters `beta=2.5`, `alpha=1.0` and `gamma=0.0`.
 
 >>> import openturns as ot
 >>> real_distribution = ot.Pareto(2.5, 1.0, 0.0)
