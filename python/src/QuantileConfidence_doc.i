@@ -22,7 +22,7 @@ with a confidence greater than :math:`\beta` using order statistics.
 Let :math:`x_{\alpha}` be the unknown quantile of level :math:`\alpha` of the random variable :math:`X` of dimension 1.
 Let :math:`(X_0, \dots, X_{\sampleSize-1})` be a sample of independent and identically distributed variables according to :math:`X`.
 
-The bounds of the interval are computed from order statistics that we now introduce.
+The bounds of the quantile are computed from order statistics that we now introduce.
 Let :math:`X_{(k)}` be the :math:`k+1` -th order statistics of :math:`(X_0, \dots, X_{\sampleSize-1})` for :math:`0 \leq k \leq \sampleSize -1`.
 For example, :math:`X_{(0)} = \min (X_0, \dots, X_{\sampleSize-1})`
 and :math:`X_{(\sampleSize -1)} = \max (X_0, \dots, X_{\sampleSize-1})`.
@@ -52,7 +52,7 @@ Examples
 // ---------------------------------------------------------------------
 
 %feature("docstring") OT::QuantileConfidence::computeUnilateralRank
-R"RAW(Evaluate the rank of a quantile lower bound.
+R"RAW(Evaluate the rank of a quantile lower or upper bound.
 
 The lower rank :math:`k_{low}` is the largest rank :math:`k`  with :math:`0 \leq k \leq \sampleSize -1` such that:
 
@@ -80,10 +80,8 @@ Parameters
 size : int
     Sample size
 lower_bounded : bool, optional
-    True indicates the interval is bounded by a lower value.
-
-    False indicates the interval is bounded by an upper value.
-
+    True to compute the lower bound of the quantile,
+    False for the upper bound.
     Default value is False.
 
 Returns
@@ -184,10 +182,8 @@ Parameters
 sample : 2-d sequence of float
     Quantile level
 lower_bounded : bool, optional
-    True indicates the interval is bounded by a lower value.
-
-    False indicates the interval is bounded by an upper value.
-
+    True to compute the lower bound of the confidence interval,
+    False for the upper bound.
     Default value is False.
 
 Returns
@@ -218,8 +214,8 @@ Parameters
 sample : 2-d sequence of float
     Quantile level
 lower_bounded : bool, optional
-    True indicates the interval is bounded by a lower value.
-    False indicates the interval is bounded by an upper value.
+    True to compute the lower bound of the quantile,
+    False for the upper bound.
     Default value is False.
 
 Returns
@@ -362,10 +358,8 @@ k : int, optional, :math:`k \geq 0`
 
     Default value is 0.
 lower_bounded : bool, optional
-    True indicates the interval is bounded by a lower value.
-
-    False indicates the interval is bounded by an upper value.
-
+    True to compute the lower bound of the quantile,
+    False for the upper bound.
     Default value is False.
 
 Returns
