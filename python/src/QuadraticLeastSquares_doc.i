@@ -16,14 +16,14 @@ Let :math:`\model: \Rset^\inputDim \rightarrow \Rset^\outputDim` be a model.
 Consider the experimental design :math:`\cX` of size :math:`\sampleSize`:
 
 .. math::
-    :label: inputDataLLS
+    :label: inputDataQLS
 
     \cX = \left\{ \vect{x}^{(1)}, \dots, \vect{x}^{(\sampleSize)} \in \Rset^\inputDim \right\}.
 
 Consider the corresponding output experimental design:
 
 .. math::
-    :label: outputDataLLS
+    :label: outputDataQLS
 
     \cY = \left\{ \vect{y}^{(1)}, \dots, \vect{y}^{(\sampleSize)} \in \Rset^\outputDim \right\}
 
