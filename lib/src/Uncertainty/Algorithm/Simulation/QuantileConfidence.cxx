@@ -154,12 +154,12 @@ Indices QuantileConfidence::computeBilateralRank(const UnsignedInteger size) con
 /** Find the smallest ell such that F(ell) > F(k) + epsilon and ell > k */
 Bool QuantileConfidence::searchProbabilityJump(const UnsignedInteger size, const UnsignedInteger k, UnsignedInteger & ell) const
 {
-  const Scalar epsilon_p = ResourceMap::GetAsScalar("QuantileConfidence-ProbabilityEpsilon");
+  const Scalar probabilityEpsilon = ResourceMap::GetAsScalar("QuantileConfidence-ProbabilityEpsilon");
   const Binomial binomial(size, alpha_);
-  const Scalar p_ref = binomial.computeCDF(k) + epsilon_p;
+  const Scalar probabilityReference = binomial.computeCDF(k) + probabilityEpsilon;
   Bool succeeds = false;
 
-  if (p_ref >= 1.0)
+  if (probabilityReference >= 1.0)
   {
     ell = size;
     return succeeds;
@@ -171,13 +171,13 @@ Bool QuantileConfidence::searchProbabilityJump(const UnsignedInteger size, const
 
   while (true)
   {
-    const UnsignedInteger L_test = std::min(k + increment, size);
-    const Scalar p_test = binomial.computeCDF(L_test);
+    const UnsignedInteger ellIndexTest = std::min(k + increment, size);
+    const Scalar probabilityTest = binomial.computeCDF(ellIndexTest);
 
-    if (p_test > p_ref)
+    if (probabilityTest > probabilityReference)
       break;
 
-    if (L_test == size)
+    if (ellIndexTest == size)
     {
       ell = size;
       return succeeds;
@@ -188,7 +188,7 @@ Bool QuantileConfidence::searchProbabilityJump(const UnsignedInteger size, const
   }
 
   // Phase 2: Increment decrease following a law of the form 2^-j
-  UnsignedInteger L_base = (i > 0) ? k + (increment / 2) : k;
+  UnsignedInteger ellIndexCandidate = (i > 0) ? k + (increment / 2) : k;
   UnsignedInteger reduction = increment;
 
   while (true)
@@ -197,18 +197,18 @@ Bool QuantileConfidence::searchProbabilityJump(const UnsignedInteger size, const
     if (reduction == 0)
       break;
 
-    const UnsignedInteger L_milieu = L_base + reduction;
-    const Scalar p_milieu = binomial.computeCDF(L_milieu);
+    const UnsignedInteger ellIndexCenter = ellIndexCandidate + reduction;
+    const Scalar probabilityCenter = binomial.computeCDF(ellIndexCenter);
 
-    if (p_milieu <= p_ref)
+    if (probabilityCenter <= probabilityReference)
     {
       // If no jump is detected, the starting point is moved forward
-      L_base = L_milieu;
+      ellIndexCandidate = ellIndexCenter;
     }
   }
 
   succeeds = true;
-  ell = L_base + 1;
+  ell = ellIndexCandidate + 1;
   return succeeds;
 }
 
