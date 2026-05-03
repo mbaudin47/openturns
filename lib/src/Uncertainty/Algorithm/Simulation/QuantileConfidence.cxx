@@ -145,7 +145,7 @@ Indices QuantileConfidence::computeBilateralRank(const UnsignedInteger size) con
       break;
     
   } // while k1
-  if (not found)
+  if (!found)
     throw InvalidArgumentException(HERE) << "Cannot find suitable ranks for size=" 
         << size << ", alpha=" << alpha_ << ", beta=" << beta_;
   return {k1Best, k2Best};
