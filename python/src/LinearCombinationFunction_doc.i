@@ -1,30 +1,49 @@
 %feature("docstring") OT::LinearCombinationFunction
 R"RAW(Linear combination of functions.
 
-Allows one to create a function which is the linear combination of functions
-with scalar weights.
+This class allows one to define a new function as a weighted sum of several existing functions.
 
-:math:`functionCollection  = (f_1, \hdots, f_N)`
-where :math:`\forall 1 \leq i \leq N, \,     f_i: \Rset^n \rightarrow \Rset^{p}`
-and :math:`scalarCoefficientColl = (c_1, \hdots, c_N) \in \Rset^N`
-then the linear combination is:
+Let :math:`q \in \Nset` be an integer representing the number of functions.
+Let :math:`(f_1, \ldots, f_q)` be a collection of functions where
+:math:`f_i: \Rset^{\inputDim} \to \Rset^{\outputDim}` for any
+:math:`i \in \{1, \ldots, q\}`.
+Let :math:`(c_1, \ldots, c_q)` be a collection of scalar weights.
+The linear combination is the function :math:`f: \Rset^{\inputDim} \to \Rset^{\outputDim}` defined by:
 
 .. math::
 
-    linComb  \left|\begin{array}{rcl}
-                  \Rset^n & \rightarrow & \Rset^{p} \\
-                  \vect{X} & \mapsto & \displaystyle \sum_{i=1}^N c_i f_i (\vect{X})
-              \end{array}\right.
+    f(\vect{x}) = \sum_{i=1}^q c_i f_i(\vect{x})
+
+for any :math:`\vect{x} \in \Rset^{\inputDim}`.
 
 Parameters
 ----------
 functionCollection : sequence of :class:`~openturns.Function`
     Collection of functions to sum.
-scalarCoefficientColl : sequence of float
+coefficients : sequence of float
     Collection of scalar weights.
 
 Examples
 --------
+
+Let :math:`x \in \Rset` be the input.
+The three scalar functions :math:`f_1, f_2, f_3: \Rset \to \Rset` are defined as:  
+
+.. math::
+
+    f_1(x) = \sin(x), \quad f_2(x) = x, \quad f_3(x) = \cos(x)
+
+for any :math:`x \in \Rset`.
+
+With the scalar weights :math:`c_1 = 1`, :math:`c_2 = 2`, :math:`c_3 = 3`,
+the resulting linear combination :math:`f: \Rset \to \Rset` is defined by:
+
+.. math::
+
+    f(x) = \sin(x) + 2 x + 3 \cos(x)
+
+for any :math:`x \in \Rset`.
+
 >>> import openturns as ot
 >>> f1 = ot.SymbolicFunction(['x'], ['sin(x)'])
 >>> f2 = ot.SymbolicFunction(['x'], ['x'])
