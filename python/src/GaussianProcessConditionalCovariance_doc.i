@@ -16,7 +16,7 @@ We suppose we have a sample :math:`(\vect{x}_k, \vect{y}_k)_{1 \leq k \leq \samp
 
     \vect{Y}(\omega, \vect{x}) = \vect{\mu}(\vect{x}) + \vect{W}(\omega, \vect{x})
 
-where :math:`\vect{\mu} : \Rset^\inputDim \rightarrow \Rset^outputDim` is the trend function and :math:`\vect{W}` is a Gaussian process of dimension :math:`\outputDim` with zero mean and a specified covariance function. The Gaussian process regression denoted by :math:`\vect{Z}` is defined by:
+where :math:`\vect{\mu} : \Rset^\inputDim \rightarrow \Rset^{\outputDim}` is the trend function and :math:`\vect{W}` is a Gaussian process of dimension :math:`\outputDim` with zero mean and a specified covariance function. The Gaussian process regression denoted by :math:`\vect{Z}` is defined by:
 
 .. math::
 
