@@ -138,8 +138,8 @@ def build_q_norm_function(weights, q):
         raise ValueError("All weights must be strictly positive.")
     if len(weights) != 2:
         raise ValueError(f"The number of weights should be 2, but is {len(weights)}")
-    if q < 0.0:
-        raise ValueError(f"The parameter q should be greater or equal than 0, but is {q}")
+    if q <= 0.0:
+        raise ValueError(f"The parameter q should be greater than 0, but is {q}")
     q_norm_function = ot.SymbolicFunction(
         ["x1", "x2", "w1", "w2", "q"], ["((w1 * x1)^q + (w2 * x2)^q)^(1 / q)"]
     )
