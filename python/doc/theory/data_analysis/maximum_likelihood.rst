@@ -54,7 +54,7 @@ and standard deviation),
 .. math::
 
    \begin{aligned}
-       L\left(x_1,\ldots, x_\sampleSize, \vect{\theta}\right) 
+       L\left(x_1,\ldots, x_\sampleSize, \vect{\theta}\right)
        &= \prod_{j=1}^{\sampleSize} \frac{1}{\sigma \sqrt{2\pi}} \exp \left( -\frac{1}{2} \left( \frac{x_j-\mu}{\sigma}  \right)^2  \right) \\
        &= \frac{1}{\sigma^\sampleSize (2\pi)^{\sampleSize/2}} \exp \left( -\frac{1}{2\sigma^2} \sum_{j=1}^\sampleSize \left( x_j-\mu \right)^2  \right)
      \end{aligned}
@@ -102,7 +102,7 @@ estimators are obtained analytically:
    \begin{aligned}
        \widehat{\mu}
        & = \frac{1}{\sampleSize} \sum_{i=1}^\sampleSize x_i, \\
-       \widehat{\sigma^2} 
+       \widehat{\sigma^2}
        & = \frac{1}{\sampleSize} \sum_{i=1}^\sampleSize \left( x_i - \widehat{\mu} \right)^2
    \end{aligned}
 
